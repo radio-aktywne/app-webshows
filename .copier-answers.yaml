@@ -1,12 +1,14 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
-_commit: 0.11.0
+_commit: 0.12.0
 _src_path: gh:radio-aktywne/template-app-next
+access: true
 accountname: radio-aktywne
 appname: tulip
 description: Broadcast shows app 🎭
 docs: true
 docsurl: https://radio-aktywne.github.io/tulip
 envprefix: TULIP
+identity: true
 imagename: apps/tulip
 keyprefix: tulip
 port: 10530

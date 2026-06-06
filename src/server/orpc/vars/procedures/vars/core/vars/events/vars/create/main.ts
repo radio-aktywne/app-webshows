@@ -3,9 +3,11 @@ import { isJSONValue } from "es-toolkit/predicate";
 
 import { state } from "../../../../../../../../../state/vars/state";
 import { orpcServerRootBase } from "../../../../../../../bases/root";
+import { authenticatedMiddleware } from "../../../../../../../middleware/authenticated";
 
-export const create = orpcServerRootBase.core.events.create.handler(
-  async ({ errors, input }) => {
+export const create = orpcServerRootBase.core.events.create
+  .use(authenticatedMiddleware)
+  .handler(async ({ errors, input }) => {
     const { data, ...query } = input;
 
     const { data: eventsCreateData, response: eventsCreateResponse } =
@@ -22,5 +24,4 @@ export const create = orpcServerRootBase.core.events.create.handler(
     }
 
     return eventsCreateData;
-  },
-);
+  });

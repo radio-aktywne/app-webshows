@@ -9,6 +9,7 @@ import type {
 import type { Keys } from "./types";
 
 import { Metadata } from "../../../../../../isomorphic/metadata/components/metadata";
+import { Authenticated } from "../../../../../../server/access/components/authenticated";
 import { createMetadata } from "../../../../../../server/metadata/lib/create-metadata";
 import { EventsPageView } from "./page.view";
 import { Schemas } from "./schemas";
@@ -38,9 +39,9 @@ export default async function EventsPage({
   const queryParameters = await Schemas.Query.parseAsync(await searchParams);
 
   return (
-    <>
+    <Authenticated>
       <Metadata title={await getTitle({ queryParameters: queryParameters })} />
       <EventsPageView queryParameters={queryParameters} />
-    </>
+    </Authenticated>
   );
 }
