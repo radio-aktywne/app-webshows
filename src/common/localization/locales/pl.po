@@ -65,7 +65,7 @@ msgstr "Wystąpił nieoczekiwany błąd"
 msgid "Back"
 msgstr "Cofnij"
 
-#: src/app/(root)/layout.tsx:33
+#: src/app/(root)/layout.tsx:36
 msgid "Broadcast shows app 🎭"
 msgstr "Broadcast shows app 🎭"
 
@@ -87,7 +87,7 @@ msgstr "Utwórz"
 msgid "Create event"
 msgstr "Utwórz emisję"
 
-#: src/app/(root)/(events)/(master)/(detail)/events/new/page.tsx:20
+#: src/app/(root)/(events)/(master)/(detail)/events/new/page.tsx:21
 msgid "Create event • tulip"
 msgstr "Utwórz emisję • tulip"
 
@@ -140,17 +140,16 @@ msgstr "Wprowadź tytuł audycji"
 msgid "Enter some value"
 msgstr "Wprowadź jakąś wartość"
 
-#: src/isomorphic/notifications/hooks/use-notifications/main.ts:46
+#: src/isomorphic/notifications/hooks/use-notifications/main.ts:40
 msgid "Error"
 msgstr "Błąd"
 
 #: src/app/(root)/(events)/(master)/(detail)/error.tsx:11
-#: src/app/(root)/(events)/error.tsx:11
-#: src/app/(root)/(main)/error.tsx:11
+#: src/app/(root)/error.tsx:11
 msgid "Error • tulip"
 msgstr "Błąd • tulip"
 
-#: src/app/(root)/(events)/(master)/(detail)/events/[id]/page.tsx:40
+#: src/app/(root)/(events)/(master)/(detail)/events/[id]/page.tsx:42
 msgid "Event {eventId} • tulip"
 msgstr "Emisja {eventId} • tulip"
 
@@ -166,15 +165,27 @@ msgstr "Utworzono emisję"
 msgid "Event deleted"
 msgstr "Usunięto emisję"
 
+#: src/app/(root)/(events)/(master)/(detail)/events/[id]/not-found.view.tsx:8
+msgid "Event not found"
+msgstr "Nie znaleziono emisji"
+
+#: src/app/(root)/(events)/(master)/(detail)/events/[id]/not-found.tsx:15
+msgid "Event not found • tulip"
+msgstr "Nie znaleziono emisji • tulip"
+
 #: src/client/core/components/event-widget/main.tsx:96
 msgid "Event updated"
 msgstr "Zaktualizowano emisję"
 
-#: src/app/(root)/(events)/(master)/(detail)/events/page.tsx:20
+#: src/app/(root)/(events)/(master)/(detail)/events/page.tsx:21
 msgid "Events • tulip"
 msgstr "Emisje • tulip"
 
-#: src/isomorphic/notifications/hooks/use-notifications/main.ts:56
+#: src/app/(root)/forbidden.tsx:10
+msgid "Forbidden • tulip"
+msgstr "Brak dostępu • tulip"
+
+#: src/isomorphic/notifications/hooks/use-notifications/main.ts:51
 msgid "Info"
 msgstr "Informacja"
 
@@ -206,6 +217,10 @@ msgstr "Nieprawidłowe dane wejściowe"
 msgid "Live"
 msgstr "Na żywo"
 
+#: src/isomorphic/identity/components/identity-widget/main.tsx:21
+msgid "Logout"
+msgstr "Wyloguj się"
+
 #: src/client/core/components/event-widget/components/edit-event-form/main.tsx:250
 #: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:248
 msgid "Never"
@@ -221,7 +236,7 @@ msgid "No shows"
 msgstr "Brak audycji"
 
 #: src/app/(root)/(events)/(master)/(detail)/not-found.tsx:15
-#: src/app/(root)/(main)/not-found.tsx:15
+#: src/app/(root)/not-found.tsx:15
 msgid "Not Found • tulip"
 msgstr "Nie znaleziono • tulip"
 
@@ -230,8 +245,7 @@ msgstr "Nie znaleziono • tulip"
 msgid "On"
 msgstr "O czasie"
 
-#: src/app/(root)/(events)/(master)/(detail)/not-found.view.tsx:8
-#: src/app/(root)/(main)/not-found.view.tsx:8
+#: src/isomorphic/core/components/generic/not-found-widget/main.tsx:15
 msgid "Page not found"
 msgstr "Nie znaleziono strony"
 
@@ -276,7 +290,7 @@ msgstr "Powtarzaj co"
 msgid "Replay"
 msgstr "Powtórka"
 
-#: src/isomorphic/core/components/generic/error-widget/main.tsx:21
+#: src/isomorphic/core/components/generic/error-widget/main.tsx:25
 msgid "Retry"
 msgstr "Spróbuj ponownie"
 
@@ -367,9 +381,7 @@ msgstr "Zaktualizowano audycję"
 msgid "Shows"
 msgstr "Audycje"
 
-#: src/app/(root)/(events)/(master)/(detail)/error.view.tsx:10
-#: src/app/(root)/(events)/error.view.tsx:12
-#: src/app/(root)/(main)/error.view.tsx:10
+#: src/isomorphic/core/components/generic/error-widget/main.tsx:16
 msgid "Something went wrong"
 msgstr "Coś poszło nie tak"
 
@@ -386,7 +398,7 @@ msgstr "Czas rozpoczęcia jest wymagany"
 msgid "Submit"
 msgstr "Wyślij"
 
-#: src/isomorphic/notifications/hooks/use-notifications/main.ts:66
+#: src/isomorphic/notifications/hooks/use-notifications/main.ts:62
 msgid "Success"
 msgstr "Sukces"
 
@@ -400,7 +412,7 @@ msgstr "Strefa czasowa"
 msgid "Title"
 msgstr "Tytuł"
 
-#: src/app/(root)/layout.tsx:39
+#: src/app/(root)/layout.tsx:42
 msgid "tulip"
 msgstr "tulip"
 
@@ -413,11 +425,11 @@ msgstr "Typ"
 msgid "Type is required"
 msgstr "Typ jest wymagany"
 
-#: src/isomorphic/notifications/hooks/use-notifications/main.ts:76
+#: src/isomorphic/notifications/hooks/use-notifications/main.ts:73
 msgid "Warning"
 msgstr "Ostrzeżenie"
 
-#: src/server/orpc/vars/procedures/vars/test/vars/validate/main.ts:27
+#: src/server/orpc/vars/procedures/vars/test/vars/validate/main.ts:29
 msgid "Why did the chicken cross the road? To get to the other side."
 msgstr "Dlaczego kura przeszła przez ulicę? Żeby dostać się na drugą stronę."
 
@@ -425,3 +437,11 @@ msgstr "Dlaczego kura przeszła przez ulicę? Żeby dostać się na drugą stron
 #: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:152
 msgid "Yes"
 msgstr "Tak"
+
+#: src/isomorphic/access/components/forbidden-widget/main.tsx:16
+msgid "You are not allowed to access this page"
+msgstr "Nie masz dostępu do tej strony"
+
+#: src/isomorphic/identity/components/identity-provider/components/user-synchronizer/main.tsx:56
+msgid "You are not authenticated. Reload the page to authenticate again."
+msgstr "Nie jesteś uwierzytelniony. Odśwież stronę, aby ponownie się uwierzytelnić."

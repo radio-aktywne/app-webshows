@@ -1,5 +1,5 @@
 import { msg } from "@lingui/core/macro";
-import { notFound } from "next/navigation";
+import { forbidden, notFound } from "next/navigation";
 import { connection } from "next/server";
 
 import type {
@@ -11,6 +11,7 @@ import type { Keys } from "./types";
 
 import { isOrpcDefinedError } from "../../../../../../../common/orpc/lib/is-orpc-defined-error";
 import { Metadata } from "../../../../../../../isomorphic/metadata/components/metadata";
+import { Authenticated } from "../../../../../../../server/access/components/authenticated";
 import { createMetadata } from "../../../../../../../server/metadata/lib/create-metadata";
 import { orpcServerSideQueryClient } from "../../../../../../../server/orpc/vars/clients";
 import { getQueryClient } from "../../../../../../../server/query/lib/get-query-client";
@@ -30,6 +31,7 @@ async function getTitle({
         }),
       );
     } catch (error) {
+      if (isOrpcDefinedError(error) && error.code === "FORBIDDEN") forbidden();
       if (isOrpcDefinedError(error) && error.code === "NOT_FOUND") notFound();
       throw error;
     }
@@ -58,9 +60,9 @@ export default async function EventsIdPage({
   const pathParameters = await Schemas.Path.parseAsync(await params);
 
   return (
-    <>
+    <Authenticated>
       <Metadata title={await getTitle({ pathParameters: pathParameters })} />
       <EventsIdPageView pathParameters={pathParameters} />
-    </>
+    </Authenticated>
   );
 }
