@@ -38,7 +38,7 @@ export function ListEventsWidget({ date }: ListEventsWidgetInput) {
     [localization.locale, parsedDate],
   );
 
-  const scheduleListInput = useMemo(
+  const instancesListInput = useMemo(
     () => ({
       end: localDate
         .startOf("week")
@@ -46,46 +46,42 @@ export function ListEventsWidget({ date }: ListEventsWidgetInput) {
         .add(1, "week")
         .add(26, "hours")
         .utc()
-        .format("YYYY-MM-DDTHH:mm:ss"),
-      include: { show: true },
-      limit: null,
+        .format("YYYY-MM-DDTHH:mm:ss[Z]"),
+      include: { event: { include: { show: true } } },
       start: localDate
         .startOf("week")
         .subtract(1, "week")
         .subtract(26, "hours")
         .utc()
-        .format("YYYY-MM-DDTHH:mm:ss"),
+        .format("YYYY-MM-DDTHH:mm:ss[Z]"),
     }),
     [localDate],
   );
 
-  const scheduleListQuery = useQuery(
-    orpcClientSideQueryClient.core.schedule.list.queryOptions({
-      input: scheduleListInput,
+  const instancesListQuery = useQuery(
+    orpcClientSideQueryClient.core.instances.list.queryOptions({
+      input: instancesListInput,
     }),
   );
 
-  const scheduleList = scheduleListQuery.data as SetNonNullableDeep<
-    typeof scheduleListQuery.data,
-    "schedules.0.event.show"
+  const instancesList = instancesListQuery.data as SetNonNullableDeep<
+    typeof instancesListQuery.data,
+    "instances.0.event"
   >;
 
   return (
     <Stack align="center" h="100%" justify="space-between" w="100%">
       <Controls date={localDate} />
       <Box style={{ overflow: "auto" }} w="100%">
-        {scheduleList ? (
+        {instancesList ? (
           <Calendar current={localDate} now={now}>
-            {scheduleList.schedules.flatMap((schedule, i) =>
-              schedule.instances.map((instance, j) => (
-                <EventInstanceItem
-                  current={localDate}
-                  event={schedule.event}
-                  instance={instance}
-                  key={`${i}-${j}`}
-                />
-              )),
-            )}
+            {instancesList.instances.map((instance) => (
+              <EventInstanceItem
+                current={localDate}
+                instance={instance}
+                key={`${instance.event.id}-${instance.start}`}
+              />
+            ))}
           </Calendar>
         ) : (
           <LoadingWidget />

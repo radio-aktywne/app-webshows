@@ -9,6 +9,7 @@ import { useCallback, useMemo, useState } from "react";
 
 import type { NewEventWidgetInput } from "./types";
 
+import { dayjs } from "../../../../common/dates/vars/dayjs";
 import { getValidationIssue } from "../../../../common/orpc/lib/get-validation-issue";
 import { isOrpcDefinedError } from "../../../../common/orpc/lib/is-orpc-defined-error";
 import { useLocalization } from "../../../../isomorphic/localization/hooks/use-localization";
@@ -38,11 +39,6 @@ export function NewEventWidget({}: NewEventWidgetInput) {
       if (!values.type) {
         notifications.error({ message: msg({ message: "Invalid input" }) });
         return { errors: { type: msg({ message: "Type is required" }) } };
-      }
-
-      if (!values.show) {
-        notifications.error({ message: msg({ message: "Invalid input" }) });
-        return { errors: { show: msg({ message: "Show is required" }) } };
       }
 
       if (!values.start) {
@@ -88,12 +84,15 @@ export function NewEventWidget({}: NewEventWidgetInput) {
         };
       }
 
-      if (values.recurrence.recurring === "yes" && !values.recurrence.ending) {
+      if (
+        values.recurrence.recurring === "yes" &&
+        !values.recurrence.termination
+      ) {
         notifications.error({ message: msg({ message: "Invalid input" }) });
 
         return {
           errors: {
-            "recurrence.ending.ends": msg({
+            "recurrence.termination.ends": msg({
               message: "Recurrence ending condition is required",
             }),
           },
@@ -102,14 +101,14 @@ export function NewEventWidget({}: NewEventWidgetInput) {
 
       if (
         values.recurrence.recurring === "yes" &&
-        values.recurrence.ending?.ends === "on" &&
-        !values.recurrence.ending.date
+        values.recurrence.termination?.ends === "on" &&
+        !values.recurrence.termination.date
       ) {
         notifications.error({ message: msg({ message: "Invalid input" }) });
 
         return {
           errors: {
-            "recurrence.ending.date": msg({
+            "recurrence.termination.date": msg({
               message: "Recurrence end date is required",
             }),
           },
@@ -118,14 +117,14 @@ export function NewEventWidget({}: NewEventWidgetInput) {
 
       if (
         values.recurrence.recurring === "yes" &&
-        values.recurrence.ending?.ends === "after" &&
-        !values.recurrence.ending.times
+        values.recurrence.termination?.ends === "after" &&
+        !values.recurrence.termination.times
       ) {
         notifications.error({ message: msg({ message: "Invalid input" }) });
 
         return {
           errors: {
-            "recurrence.ending.times": msg({
+            "recurrence.termination.times": msg({
               message: "Recurrence end times is required",
             }),
           },
@@ -137,25 +136,40 @@ export function NewEventWidget({}: NewEventWidgetInput) {
       try {
         const event = await eventsCreateMutation.mutateAsync({
           data: {
-            end: values.end.replace(" ", "T"),
+            duration: dayjs
+              .duration(
+                dayjs
+                  .tz(values.end.replace(" ", "T"), values.timezone)
+                  .diff(
+                    dayjs.tz(values.start.replace(" ", "T"), values.timezone),
+                  ),
+              )
+              .toISOString(),
             recurrence:
               values.recurrence.recurring === "yes" &&
               values.recurrence.frequency &&
               values.recurrence.interval &&
-              values.recurrence.ending
+              values.recurrence.termination
                 ? {
-                    rule: {
-                      count:
-                        values.recurrence.ending.ends === "after"
-                          ? values.recurrence.ending.times
-                          : undefined,
-                      frequency: values.recurrence.frequency,
-                      interval: values.recurrence.interval,
-                      until:
-                        values.recurrence.ending.ends === "on"
-                          ? values.recurrence.ending.date?.replace(" ", "T")
-                          : undefined,
-                    },
+                    frequency: values.recurrence.frequency,
+                    interval: values.recurrence.interval,
+                    termination:
+                      values.recurrence.termination.ends === "after" &&
+                      values.recurrence.termination.times
+                        ? {
+                            count: values.recurrence.termination.times,
+                            type: "count" as const,
+                          }
+                        : values.recurrence.termination.ends === "on" &&
+                            values.recurrence.termination.date
+                          ? {
+                              type: "until" as const,
+                              until: values.recurrence.termination.date.replace(
+                                " ",
+                                "T",
+                              ),
+                            }
+                          : null,
                   }
                 : null,
             showId: values.show,
@@ -173,30 +187,37 @@ export function NewEventWidget({}: NewEventWidgetInput) {
 
         return {
           values: {
-            end: event.end.replace("T", " "),
+            end: dayjs(event.start)
+              .add(dayjs.duration(event.duration))
+              .toISOString()
+              .replace("T", " "),
             recurrence:
-              event.recurrence?.rule?.interval &&
-              (event.recurrence.rule.frequency == "daily" ||
-                event.recurrence.rule.frequency == "weekly" ||
-                event.recurrence.rule.frequency == "monthly" ||
-                event.recurrence.rule.frequency == "yearly")
+              event.recurrence &&
+              (event.recurrence.frequency == "daily" ||
+                event.recurrence.frequency == "weekly" ||
+                event.recurrence.frequency == "monthly" ||
+                event.recurrence.frequency == "yearly")
                 ? {
-                    ending: event.recurrence.rule.count
-                      ? {
-                          ends: "after" as const,
-                          times: event.recurrence.rule.count,
-                        }
-                      : event.recurrence.rule.until
-                        ? {
-                            date: event.recurrence.rule.until.replace("T", " "),
-                            ends: "on" as const,
-                          }
-                        : {
-                            ends: "never" as const,
-                          },
-                    frequency: event.recurrence.rule.frequency,
-                    interval: event.recurrence.rule.interval,
+                    frequency: event.recurrence.frequency,
+                    interval: event.recurrence.interval ?? 1,
                     recurring: "yes" as const,
+                    termination:
+                      event.recurrence.termination?.type === "count"
+                        ? {
+                            ends: "after" as const,
+                            times: event.recurrence.termination.count,
+                          }
+                        : event.recurrence.termination?.type === "until"
+                          ? {
+                              date: event.recurrence.termination.until.replace(
+                                "T",
+                                " ",
+                              ),
+                              ends: "on" as const,
+                            }
+                          : {
+                              ends: "never" as const,
+                            },
                   }
                 : { recurring: "no" as const },
             show: event.showId,
@@ -212,25 +233,21 @@ export function NewEventWidget({}: NewEventWidgetInput) {
 
             return {
               errors: {
-                end: getValidationIssue({
-                  error: error,
-                  path: "data.end",
-                }).message,
-                "recurrence.ending.date": getValidationIssue({
-                  error: error,
-                  path: "data.recurrence.rule.until",
-                }).message,
-                "recurrence.ending.times": getValidationIssue({
-                  error: error,
-                  path: "data.recurrence.rule.count",
-                }).message,
                 "recurrence.frequency": getValidationIssue({
                   error: error,
-                  path: "data.recurrence.rule.frequency",
+                  path: "data.recurrence.frequency",
                 }).message,
                 "recurrence.interval": getValidationIssue({
                   error: error,
-                  path: "data.recurrence.rule.interval",
+                  path: "data.recurrence.interval",
+                }).message,
+                "recurrence.termination.date": getValidationIssue({
+                  error: error,
+                  path: "data.recurrence.termination.until",
+                }).message,
+                "recurrence.termination.times": getValidationIssue({
+                  error: error,
+                  path: "data.recurrence.termination.count",
                 }).message,
                 show: getValidationIssue({
                   error: error,

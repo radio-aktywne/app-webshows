@@ -10,6 +10,7 @@ import { useDeepCompareMemo } from "use-deep-compare";
 
 import type { EventWidgetInput } from "./types";
 
+import { dayjs } from "../../../../common/dates/vars/dayjs";
 import { getValidationIssue } from "../../../../common/orpc/lib/get-validation-issue";
 import { isOrpcDefinedError } from "../../../../common/orpc/lib/is-orpc-defined-error";
 import { useLocalization } from "../../../../isomorphic/localization/hooks/use-localization";
@@ -49,14 +50,14 @@ export function EventWidget({ id }: EventWidgetInput) {
 
       if (
         values.recurrence.recurring === "yes" &&
-        values.recurrence.ending.ends === "on" &&
-        !values.recurrence.ending.date
+        values.recurrence.termination.ends === "on" &&
+        !values.recurrence.termination.date
       ) {
         notifications.error({ message: msg({ message: "Invalid input" }) });
 
         return {
           errors: {
-            "recurrence.ending.date": msg({
+            "recurrence.termination.date": msg({
               message: "Recurrence end date is required",
             }),
           },
@@ -68,22 +69,37 @@ export function EventWidget({ id }: EventWidgetInput) {
       try {
         const event = await eventsUpdateMutation.mutateAsync({
           data: {
-            end: values.end.replace(" ", "T"),
+            duration: dayjs
+              .duration(
+                dayjs
+                  .tz(values.end.replace(" ", "T"), values.timezone)
+                  .diff(
+                    dayjs.tz(values.start.replace(" ", "T"), values.timezone),
+                  ),
+              )
+              .toISOString(),
             recurrence:
               values.recurrence.recurring === "yes"
                 ? {
-                    rule: {
-                      count:
-                        values.recurrence.ending.ends === "after"
-                          ? values.recurrence.ending.times
-                          : undefined,
-                      frequency: values.recurrence.frequency,
-                      interval: values.recurrence.interval,
-                      until:
-                        values.recurrence.ending.ends === "on"
-                          ? values.recurrence.ending.date?.replace(" ", "T")
-                          : undefined,
-                    },
+                    frequency: values.recurrence.frequency,
+                    interval: values.recurrence.interval,
+                    termination:
+                      values.recurrence.termination.ends === "after" &&
+                      values.recurrence.termination.times
+                        ? {
+                            count: values.recurrence.termination.times,
+                            type: "count" as const,
+                          }
+                        : values.recurrence.termination.ends === "on" &&
+                            values.recurrence.termination.date
+                          ? {
+                              type: "until" as const,
+                              until: values.recurrence.termination.date.replace(
+                                " ",
+                                "T",
+                              ),
+                            }
+                          : null,
                   }
                 : null,
             start: values.start.replace(" ", "T"),
@@ -99,30 +115,37 @@ export function EventWidget({ id }: EventWidgetInput) {
 
         return {
           values: {
-            end: event.end.replace("T", " "),
+            end: dayjs(event.start)
+              .add(dayjs.duration(event.duration))
+              .toISOString()
+              .replace("T", " "),
             recurrence:
-              event.recurrence?.rule?.interval &&
-              (event.recurrence.rule.frequency == "daily" ||
-                event.recurrence.rule.frequency == "weekly" ||
-                event.recurrence.rule.frequency == "monthly" ||
-                event.recurrence.rule.frequency == "yearly")
+              event.recurrence &&
+              (event.recurrence.frequency == "daily" ||
+                event.recurrence.frequency == "weekly" ||
+                event.recurrence.frequency == "monthly" ||
+                event.recurrence.frequency == "yearly")
                 ? {
-                    ending: event.recurrence.rule.count
-                      ? {
-                          ends: "after" as const,
-                          times: event.recurrence.rule.count,
-                        }
-                      : event.recurrence.rule.until
-                        ? {
-                            date: event.recurrence.rule.until.replace("T", " "),
-                            ends: "on" as const,
-                          }
-                        : {
-                            ends: "never" as const,
-                          },
-                    frequency: event.recurrence.rule.frequency,
-                    interval: event.recurrence.rule.interval,
+                    frequency: event.recurrence.frequency,
+                    interval: event.recurrence.interval ?? 1,
                     recurring: "yes" as const,
+                    termination:
+                      event.recurrence.termination?.type === "count"
+                        ? {
+                            ends: "after" as const,
+                            times: event.recurrence.termination.count,
+                          }
+                        : event.recurrence.termination?.type === "until"
+                          ? {
+                              date: event.recurrence.termination.until.replace(
+                                "T",
+                                " ",
+                              ),
+                              ends: "on" as const,
+                            }
+                          : {
+                              ends: "never" as const,
+                            },
                   }
                 : { recurring: "no" as const },
             show: event.showId,
@@ -138,25 +161,21 @@ export function EventWidget({ id }: EventWidgetInput) {
 
             return {
               errors: {
-                end: getValidationIssue({
-                  error: error,
-                  path: "data.end",
-                }).message,
-                "recurrence.ending.date": getValidationIssue({
-                  error: error,
-                  path: "data.recurrence.rule.until",
-                }).message,
-                "recurrence.ending.times": getValidationIssue({
-                  error: error,
-                  path: "data.recurrence.rule.count",
-                }).message,
                 "recurrence.frequency": getValidationIssue({
                   error: error,
-                  path: "data.recurrence.rule.frequency",
+                  path: "data.recurrence.frequency",
                 }).message,
                 "recurrence.interval": getValidationIssue({
                   error: error,
-                  path: "data.recurrence.rule.interval",
+                  path: "data.recurrence.interval",
+                }).message,
+                "recurrence.termination.date": getValidationIssue({
+                  error: error,
+                  path: "data.recurrence.termination.until",
+                }).message,
+                "recurrence.termination.times": getValidationIssue({
+                  error: error,
+                  path: "data.recurrence.termination.count",
                 }).message,
                 start: getValidationIssue({
                   error: error,
@@ -246,33 +265,37 @@ export function EventWidget({ id }: EventWidgetInput) {
 
   const initialValues = useDeepCompareMemo(
     () => ({
-      end: eventsGetQuery.data.end.replace("T", " "),
+      end: dayjs(eventsGetQuery.data.start)
+        .add(dayjs.duration(eventsGetQuery.data.duration))
+        .toISOString()
+        .replace("T", " "),
       recurrence:
-        eventsGetQuery.data.recurrence?.rule?.interval &&
-        (eventsGetQuery.data.recurrence.rule.frequency == "daily" ||
-          eventsGetQuery.data.recurrence.rule.frequency == "weekly" ||
-          eventsGetQuery.data.recurrence.rule.frequency == "monthly" ||
-          eventsGetQuery.data.recurrence.rule.frequency == "yearly")
+        eventsGetQuery.data.recurrence &&
+        (eventsGetQuery.data.recurrence.frequency == "daily" ||
+          eventsGetQuery.data.recurrence.frequency == "weekly" ||
+          eventsGetQuery.data.recurrence.frequency == "monthly" ||
+          eventsGetQuery.data.recurrence.frequency == "yearly")
           ? {
-              ending: eventsGetQuery.data.recurrence.rule.count
-                ? {
-                    ends: "after" as const,
-                    times: eventsGetQuery.data.recurrence.rule.count,
-                  }
-                : eventsGetQuery.data.recurrence.rule.until
-                  ? {
-                      date: eventsGetQuery.data.recurrence.rule.until.replace(
-                        "T",
-                        " ",
-                      ),
-                      ends: "on" as const,
-                    }
-                  : {
-                      ends: "never" as const,
-                    },
-              frequency: eventsGetQuery.data.recurrence.rule.frequency,
-              interval: eventsGetQuery.data.recurrence.rule.interval,
+              frequency: eventsGetQuery.data.recurrence.frequency,
+              interval: eventsGetQuery.data.recurrence.interval ?? 1,
               recurring: "yes" as const,
+              termination:
+                eventsGetQuery.data.recurrence.termination?.type === "count"
+                  ? {
+                      ends: "after" as const,
+                      times: eventsGetQuery.data.recurrence.termination.count,
+                    }
+                  : eventsGetQuery.data.recurrence.termination?.type === "until"
+                    ? {
+                        date: eventsGetQuery.data.recurrence.termination.until.replace(
+                          "T",
+                          " ",
+                        ),
+                        ends: "on" as const,
+                      }
+                    : {
+                        ends: "never" as const,
+                      },
             }
           : { recurring: "no" as const },
       show: eventsGetQuery.data.showId,

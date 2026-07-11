@@ -47,30 +47,31 @@ export function EditEventForm({
             return;
           case "yes":
             form.setFieldValue("recurrence", {
-              ending: { ends: "never" },
               frequency: "daily",
               interval: 1,
               recurring: "yes",
+              termination: { ends: "never" },
             });
             return;
         }
       } else if (
         current.recurrence.recurring === "yes" &&
         previous.recurrence.recurring === "yes" &&
-        current.recurrence.ending?.ends !== previous.recurrence.ending?.ends
+        current.recurrence.termination?.ends !==
+          previous.recurrence.termination?.ends
       ) {
-        switch (current.recurrence.ending?.ends) {
+        switch (current.recurrence.termination?.ends) {
           case "after":
-            form.setFieldValue("recurrence.ending", {
+            form.setFieldValue("recurrence.termination", {
               ends: "after",
               times: 1,
             });
             return;
           case "never":
-            form.setFieldValue("recurrence.ending", { ends: "never" });
+            form.setFieldValue("recurrence.termination", { ends: "never" });
             return;
           case "on":
-            form.setFieldValue("recurrence.ending", { ends: "on" });
+            form.setFieldValue("recurrence.termination", { ends: "on" });
             return;
         }
       }
@@ -112,7 +113,7 @@ export function EditEventForm({
         key={form.key("show")}
         label={localization.localize(msg({ message: "Show" }))}
         placeholder={localization.localize(msg({ message: "Select show" }))}
-        required={true}
+        required={false}
         {...form.getInputProps("show")}
       />
       <Select
@@ -259,44 +260,47 @@ export function EditEventForm({
                     value: "after",
                   },
                 ]}
-                key={form.key("recurrence.ending.ends")}
+                key={form.key("recurrence.termination.ends")}
                 placeholder={localization.localize(
                   msg({ message: "Select ending condition" }),
                 )}
                 required={true}
                 style={{ flexGrow: 1 }}
-                {...form.getInputProps("recurrence.ending.ends")}
+                {...form.getInputProps("recurrence.termination.ends")}
               />
-              {values.recurrence.ending?.ends === "on" && (
+              {values.recurrence.termination?.ends === "on" && (
                 <DateTimePicker
                   dropdownType="modal"
-                  key={form.key("recurrence.ending.date")}
+                  key={form.key("recurrence.termination.date")}
                   placeholder={localization.localize(
                     msg({ message: "Select recurrence end date and time" }),
                   )}
                   required={true}
                   style={{ flexGrow: 1 }}
                   valueFormat="LLL"
-                  {...form.getInputProps("recurrence.ending.date")}
+                  {...form.getInputProps("recurrence.termination.date")}
                 />
               )}
-              {values.recurrence.ending?.ends === "after" && (
+              {values.recurrence.termination?.ends === "after" && (
                 <SimpleGrid cols={2} style={{ alignItems: "center" }}>
                   <NumberInput
                     inputSize="5"
-                    key={form.key("recurrence.ending.times")}
+                    key={form.key("recurrence.termination.times")}
                     min={1}
                     required={true}
                     style={{ flexGrow: 1 }}
-                    {...form.getInputProps("recurrence.ending.times")}
+                    {...form.getInputProps("recurrence.termination.times")}
                   />
                   <Text>
                     {localization.localize(
                       msg({
-                        message: plural(values.recurrence.ending?.times ?? 1, {
-                          one: "time",
-                          other: "times",
-                        }),
+                        message: plural(
+                          values.recurrence.termination?.times ?? 1,
+                          {
+                            one: "time",
+                            other: "times",
+                          },
+                        ),
                       }),
                     )}
                   </Text>
