@@ -1,3 +1,4 @@
+import { msg } from "@lingui/core/macro";
 import { Text, UnstyledButton } from "@mantine/core";
 import { CalendarItem } from "@radio-aktywne/ui";
 import Link from "next/link";
@@ -5,27 +6,32 @@ import Link from "next/link";
 import type { EventInstanceItemInput } from "./types";
 
 import { dayjs } from "../../../../../../common/dates/vars/dayjs";
+import { useLocalization } from "../../../../../../isomorphic/localization/hooks/use-localization";
 import { constants } from "./constants";
 
 export function EventInstanceItem({
-  event,
   instance,
   ...input
 }: EventInstanceItemInput) {
+  const { localization } = useLocalization();
+
   return (
     <UnstyledButton
       component={Link}
       display="contents"
-      href={`/events/${event.id}`}
+      href={`/events/${instance.event.id}`}
     >
       <CalendarItem
-        color={constants.colors[event.type]}
-        end={dayjs.tz(instance.end, event.timezone)}
-        start={dayjs.tz(instance.start, event.timezone)}
+        color={constants.colors[instance.event.type]}
+        end={dayjs
+          .tz(instance.start, instance.event.timezone)
+          .add(dayjs.duration(instance.duration))}
+        start={dayjs.tz(instance.start, instance.event.timezone)}
         {...input}
       >
         <Text fw="bold" size="xs" ta="center" truncate="end" w="100%">
-          {event.show.title}
+          {instance.event.show?.title ??
+            localization.localize(msg({ message: "No show" }))}
         </Text>
       </CalendarItem>
     </UnstyledButton>

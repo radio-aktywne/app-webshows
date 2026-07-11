@@ -11,7 +11,10 @@ export const Schemas = {
         recurring: z.literal("no"),
       }),
       z.object({
-        ending: z.discriminatedUnion("ends", [
+        frequency: z.enum(["daily", "weekly", "monthly", "yearly"]),
+        interval: z.number().int().positive(),
+        recurring: z.literal("yes"),
+        termination: z.discriminatedUnion("ends", [
           z.object({
             ends: z.literal("never"),
           }),
@@ -28,12 +31,9 @@ export const Schemas = {
             times: z.number().int().positive(),
           }),
         ]),
-        frequency: z.enum(["daily", "weekly", "monthly", "yearly"]),
-        interval: z.number().int().positive(),
-        recurring: z.literal("yes"),
       }),
     ]),
-    show: z.uuidv4(),
+    show: z.uuidv4().nullable(),
     start: z
       .string()
       .pipe(z.transform((value) => value.replace(" ", "T")))

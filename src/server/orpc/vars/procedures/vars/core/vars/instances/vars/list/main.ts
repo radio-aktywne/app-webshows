@@ -5,17 +5,17 @@ import { state } from "../../../../../../../../../state/vars/state";
 import { orpcServerRootBase } from "../../../../../../../bases/root";
 import { authenticatedMiddleware } from "../../../../../../../middleware/authenticated";
 
-export const list = orpcServerRootBase.core.schedule.list
+export const list = orpcServerRootBase.core.instances.list
   .use(authenticatedMiddleware)
   .handler(async ({ errors, input }) => {
-    const { data: scheduleListData } =
-      await state.current.apis.beaver.scheduleList({
+    const { data: instancesListData } =
+      await state.current.apis.beaver.instancesList({
         query: mapValues(input ?? {}, (value) =>
           isJSONValue(value) ? JSON.stringify(value) : value,
         ),
       });
 
-    if (scheduleListData === undefined) throw errors.INTERNAL_SERVER_ERROR();
+    if (instancesListData === undefined) throw errors.INTERNAL_SERVER_ERROR();
 
-    return scheduleListData;
+    return instancesListData;
   });

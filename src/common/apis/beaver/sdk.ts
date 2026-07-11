@@ -8,16 +8,26 @@ import {
   EventsIdDeleteResponseSchema,
   EventsIdGetRequestSchema,
   EventsIdGetResponseSchema,
+  EventsIdSplitSplitRequestSchema,
+  EventsIdSplitSplitResponseSchema,
   EventsIdUpdateRequestSchema,
   EventsIdUpdateResponseSchema,
   EventsListRequestSchema,
   EventsListResponseSchema,
+  InstancesCreateRequestSchema,
+  InstancesCreateResponseSchema,
+  InstancesEventidStartDeleteRequestSchema,
+  InstancesEventidStartDeleteResponseSchema,
+  InstancesEventidStartGetRequestSchema,
+  InstancesEventidStartGetResponseSchema,
+  InstancesEventidStartUpdateRequestSchema,
+  InstancesEventidStartUpdateResponseSchema,
+  InstancesListRequestSchema,
+  InstancesListResponseSchema,
   PingHeadpingRequestSchema,
   PingHeadpingResponseSchema,
   PingPingRequestSchema,
   PingPingResponseSchema,
-  ScheduleListRequestSchema,
-  ScheduleListResponseSchema,
   ShowsCreateRequestSchema,
   ShowsCreateResponseSchema,
   ShowsIdDeleteRequestSchema,
@@ -43,19 +53,34 @@ import type {
   EventsIdGetErrors,
   EventsIdGetRequest,
   EventsIdGetResponses,
+  EventsIdSplitSplitErrors,
+  EventsIdSplitSplitRequest,
+  EventsIdSplitSplitResponses,
   EventsIdUpdateErrors,
   EventsIdUpdateRequest,
   EventsIdUpdateResponses,
   EventsListErrors,
   EventsListRequest,
   EventsListResponses,
+  InstancesCreateErrors,
+  InstancesCreateRequest,
+  InstancesCreateResponses,
+  InstancesEventidStartDeleteErrors,
+  InstancesEventidStartDeleteRequest,
+  InstancesEventidStartDeleteResponses,
+  InstancesEventidStartGetErrors,
+  InstancesEventidStartGetRequest,
+  InstancesEventidStartGetResponses,
+  InstancesEventidStartUpdateErrors,
+  InstancesEventidStartUpdateRequest,
+  InstancesEventidStartUpdateResponses,
+  InstancesListErrors,
+  InstancesListRequest,
+  InstancesListResponses,
   PingHeadpingRequest,
   PingHeadpingResponses,
   PingPingRequest,
   PingPingResponses,
-  ScheduleListErrors,
-  ScheduleListRequest,
-  ScheduleListResponses,
   ShowsCreateErrors,
   ShowsCreateRequest,
   ShowsCreateResponses,
@@ -251,6 +276,150 @@ export class Sdk extends HeyApiClient {
   }
 
   /**
+   * Split event
+   *
+   * Split an event by ID.
+   */
+  public eventsIdSplitSplit<ThrowOnError extends boolean = false>(
+    options: Options<EventsIdSplitSplitRequest, ThrowOnError>,
+  ) {
+    return (options.client ?? this.client).post<
+      EventsIdSplitSplitResponses,
+      EventsIdSplitSplitErrors,
+      ThrowOnError
+    >({
+      requestValidator: async (data) =>
+        await EventsIdSplitSplitRequestSchema.parseAsync(data),
+      responseValidator: async (data) =>
+        await EventsIdSplitSplitResponseSchema.parseAsync(data),
+      url: "/events/{id}/split",
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
+    });
+  }
+
+  /**
+   * List instances
+   *
+   * List instances.
+   */
+  public instancesList<ThrowOnError extends boolean = false>(
+    options?: Options<InstancesListRequest, ThrowOnError>,
+  ) {
+    return (options?.client ?? this.client).get<
+      InstancesListResponses,
+      InstancesListErrors,
+      ThrowOnError
+    >({
+      requestValidator: async (data) =>
+        await InstancesListRequestSchema.parseAsync(data),
+      responseValidator: async (data) =>
+        await InstancesListResponseSchema.parseAsync(data),
+      url: "/instances",
+      ...options,
+    });
+  }
+
+  /**
+   * Create instance
+   *
+   * Create a new instance.
+   */
+  public instancesCreate<ThrowOnError extends boolean = false>(
+    options: Options<InstancesCreateRequest, ThrowOnError>,
+  ) {
+    return (options.client ?? this.client).post<
+      InstancesCreateResponses,
+      InstancesCreateErrors,
+      ThrowOnError
+    >({
+      requestValidator: async (data) =>
+        await InstancesCreateRequestSchema.parseAsync(data),
+      responseValidator: async (data) =>
+        await InstancesCreateResponseSchema.parseAsync(data),
+      url: "/instances",
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
+    });
+  }
+
+  /**
+   * Delete instance
+   *
+   * Delete an instance by event ID and start datetime.
+   */
+  public instancesEventidStartDelete<ThrowOnError extends boolean = false>(
+    options: Options<InstancesEventidStartDeleteRequest, ThrowOnError>,
+  ) {
+    return (options.client ?? this.client).delete<
+      InstancesEventidStartDeleteResponses,
+      InstancesEventidStartDeleteErrors,
+      ThrowOnError
+    >({
+      requestValidator: async (data) =>
+        await InstancesEventidStartDeleteRequestSchema.parseAsync(data),
+      responseValidator: async (data) =>
+        await InstancesEventidStartDeleteResponseSchema.parseAsync(data),
+      url: "/instances/{eventId}/{start}",
+      ...options,
+    });
+  }
+
+  /**
+   * Get instance
+   *
+   * Get an instance by event ID and start datetime.
+   */
+  public instancesEventidStartGet<ThrowOnError extends boolean = false>(
+    options: Options<InstancesEventidStartGetRequest, ThrowOnError>,
+  ) {
+    return (options.client ?? this.client).get<
+      InstancesEventidStartGetResponses,
+      InstancesEventidStartGetErrors,
+      ThrowOnError
+    >({
+      requestValidator: async (data) =>
+        await InstancesEventidStartGetRequestSchema.parseAsync(data),
+      responseValidator: async (data) =>
+        await InstancesEventidStartGetResponseSchema.parseAsync(data),
+      url: "/instances/{eventId}/{start}",
+      ...options,
+    });
+  }
+
+  /**
+   * Update instance
+   *
+   * Update an instance by event ID and start datetime.
+   */
+  public instancesEventidStartUpdate<ThrowOnError extends boolean = false>(
+    options: Options<InstancesEventidStartUpdateRequest, ThrowOnError>,
+  ) {
+    return (options.client ?? this.client).patch<
+      InstancesEventidStartUpdateResponses,
+      InstancesEventidStartUpdateErrors,
+      ThrowOnError
+    >({
+      requestValidator: async (data) =>
+        await InstancesEventidStartUpdateRequestSchema.parseAsync(data),
+      responseValidator: async (data) =>
+        await InstancesEventidStartUpdateResponseSchema.parseAsync(data),
+      url: "/instances/{eventId}/{start}",
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
+    });
+  }
+
+  /**
    * Ping
    *
    * Ping.
@@ -290,28 +459,6 @@ export class Sdk extends HeyApiClient {
       responseValidator: async (data) =>
         await PingHeadpingResponseSchema.parseAsync(data),
       url: "/ping",
-      ...options,
-    });
-  }
-
-  /**
-   * List schedules
-   *
-   * List event schedules with instances between two dates.
-   */
-  public scheduleList<ThrowOnError extends boolean = false>(
-    options?: Options<ScheduleListRequest, ThrowOnError>,
-  ) {
-    return (options?.client ?? this.client).get<
-      ScheduleListResponses,
-      ScheduleListErrors,
-      ThrowOnError
-    >({
-      requestValidator: async (data) =>
-        await ScheduleListRequestSchema.parseAsync(data),
-      responseValidator: async (data) =>
-        await ScheduleListResponseSchema.parseAsync(data),
-      url: "/schedule",
       ...options,
     });
   }
