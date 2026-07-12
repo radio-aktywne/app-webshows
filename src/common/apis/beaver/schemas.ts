@@ -1056,52 +1056,10 @@ export const EventsModelsRecurrenceSchema = z
     description: "Recurrence rule data.",
   });
 
-/**
- * EventOrderByTimezoneInput
- *
- * Order by timezone.
- */
-export const EventOrderByTimezoneInputSchema = z
-  .object({
-    timezone: z.enum(["asc", "desc"]),
-  })
-  .register(z.globalRegistry, {
-    description: "Order by timezone.",
-  });
-
-/**
- * EventOrderByEndInput
- *
- * Order by end time.
- */
-export const EventOrderByEndInputSchema = z
-  .object({
-    end: z.enum(["asc", "desc"]),
-  })
-  .register(z.globalRegistry, {
-    description: "Order by end time.",
-  });
-
-/**
- * EventOrderByStartInput
- *
- * Order by start time.
- */
-export const EventOrderByStartInputSchema = z
-  .object({
-    start: z.enum(["asc", "desc"]),
-  })
-  .register(z.globalRegistry, {
-    description: "Order by start time.",
-  });
-
 export const EventOrderByInputSchema = z.union([
   EventsModelsEventIdOrderByInputSchema,
   EventsModelsEventTypeOrderByInputSchema,
   EventsModelsEventShowIdOrderByInputSchema,
-  EventOrderByStartInputSchema,
-  EventOrderByEndInputSchema,
-  EventOrderByTimezoneInputSchema,
 ]);
 
 export const EventsModelsListRequestOrderSchema = z

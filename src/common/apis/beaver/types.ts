@@ -2164,49 +2164,10 @@ export type EventsModelsListRequestOrder =
   | Array<EventOrderByInput>
   | null;
 
-/**
- * EventOrderByTimezoneInput
- *
- * Order by timezone.
- */
-export type EventOrderByTimezoneInput = {
-  /**
-   * Timezone
-   */
-  timezone: "asc" | "desc";
-};
-
-/**
- * EventOrderByEndInput
- *
- * Order by end time.
- */
-export type EventOrderByEndInput = {
-  /**
-   * End
-   */
-  end: "asc" | "desc";
-};
-
-/**
- * EventOrderByStartInput
- *
- * Order by start time.
- */
-export type EventOrderByStartInput = {
-  /**
-   * Start
-   */
-  start: "asc" | "desc";
-};
-
 export type EventOrderByInput =
   | EventsModelsEventIdOrderByInput
   | EventsModelsEventTypeOrderByInput
-  | EventsModelsEventShowIdOrderByInput
-  | EventOrderByStartInput
-  | EventOrderByEndInput
-  | EventOrderByTimezoneInput;
+  | EventsModelsEventShowIdOrderByInput;
 
 export type EventsModelsListRequestOffset = number | null;
 

@@ -1882,53 +1882,11 @@ components:
       type: object
       title: EventArgsFromInstance
       description: Event arguments to include when querying instances.
-    EventOrderByEndInput:
-      properties:
-        end:
-          type: string
-          enum:
-            - asc
-            - desc
-          title: End
-      type: object
-      required:
-        - end
-      title: EventOrderByEndInput
-      description: Order by end time.
     EventOrderByInput:
       anyOf:
         - $ref: "#/components/schemas/events_models__Event_id_OrderByInput"
         - $ref: "#/components/schemas/events_models__Event_type_OrderByInput"
         - $ref: "#/components/schemas/events_models__Event_showId_OrderByInput"
-        - $ref: "#/components/schemas/EventOrderByStartInput"
-        - $ref: "#/components/schemas/EventOrderByEndInput"
-        - $ref: "#/components/schemas/EventOrderByTimezoneInput"
-    EventOrderByStartInput:
-      properties:
-        start:
-          type: string
-          enum:
-            - asc
-            - desc
-          title: Start
-      type: object
-      required:
-        - start
-      title: EventOrderByStartInput
-      description: Order by start time.
-    EventOrderByTimezoneInput:
-      properties:
-        timezone:
-          type: string
-          enum:
-            - asc
-            - desc
-          title: Timezone
-      type: object
-      required:
-        - timezone
-      title: EventOrderByTimezoneInput
-      description: Order by timezone.
     EventRelationFilter:
       properties:
         is:
