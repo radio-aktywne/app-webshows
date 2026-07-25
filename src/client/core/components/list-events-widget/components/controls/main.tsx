@@ -11,6 +11,7 @@ export function Controls({ date }: ControlsInput) {
   return (
     <Group justify="space-between" w="100%">
       <ActionIcon
+        color="inherit"
         component={Link}
         href={{
           pathname: "/events",
@@ -27,6 +28,7 @@ export function Controls({ date }: ControlsInput) {
         </Text>
       </UnstyledButton>
       <ActionIcon
+        color="inherit"
         component={Link}
         href={{
           pathname: "/events",
