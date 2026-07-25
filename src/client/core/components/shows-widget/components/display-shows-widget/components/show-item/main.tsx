@@ -35,7 +35,6 @@ export function ShowItem({ onDelete, onEdit, show }: ShowItemInput) {
         disabled={deleting}
         onClick={handleDelete}
         size="auto"
-        variant="transparent"
       >
         <MdDelete size="1em" />
       </ActionIcon>
