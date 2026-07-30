@@ -1,9 +1,8 @@
 "use client";
 
 import { msg } from "@lingui/core/macro";
-import { Button, Stack, Title } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import { useMutation } from "@tanstack/react-query";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 
@@ -12,7 +11,7 @@ import type { NewEventWidgetInput } from "./types";
 import { dayjs } from "../../../../common/dates/vars/dayjs";
 import { getValidationIssue } from "../../../../common/orpc/lib/get-validation-issue";
 import { isOrpcDefinedError } from "../../../../common/orpc/lib/is-orpc-defined-error";
-import { useLocalization } from "../../../../isomorphic/localization/hooks/use-localization";
+import { useHistory } from "../../../../isomorphic/generic/hooks/use-history";
 import { useNotifications } from "../../../../isomorphic/notifications/hooks/use-notifications";
 import { orpcClientSideQueryClient } from "../../../orpc/vars/clients";
 import {
@@ -25,11 +24,18 @@ export function NewEventWidget({}: NewEventWidgetInput) {
 
   const router = useRouter();
 
-  const { localization } = useLocalization();
+  const { history } = useHistory();
   const { notifications } = useNotifications();
 
   const eventsCreateMutation = useMutation(
-    orpcClientSideQueryClient.core.events.create.mutationOptions(),
+    orpcClientSideQueryClient.core.events.create.mutationOptions({
+      meta: {
+        awaits: [
+          orpcClientSideQueryClient.core.events.list.key(),
+          orpcClientSideQueryClient.core.instances.list.key(),
+        ],
+      },
+    }),
   );
 
   const handleCreate = useCallback(
@@ -183,14 +189,15 @@ export function NewEventWidget({}: NewEventWidgetInput) {
           message: msg({ message: "Event created" }),
         });
 
-        router.push("/events");
+        if (history.entries.length > 1) router.back();
+        else router.push("/");
 
         return {
           values: {
-            end: dayjs(event.start)
+            end: dayjs
+              .tz(event.start, event.timezone)
               .add(dayjs.duration(event.duration))
-              .toISOString()
-              .replace("T", " "),
+              .format("YYYY-MM-DD HH:mm:ss"),
             recurrence:
               event.recurrence &&
               (event.recurrence.frequency == "daily" ||
@@ -209,10 +216,12 @@ export function NewEventWidget({}: NewEventWidgetInput) {
                           }
                         : event.recurrence.termination?.type === "until"
                           ? {
-                              date: event.recurrence.termination.until.replace(
-                                "T",
-                                " ",
-                              ),
+                              date: dayjs
+                                .tz(
+                                  event.recurrence.termination.until,
+                                  event.timezone,
+                                )
+                                .format("YYYY-MM-DD HH:mm:ss"),
                               ends: "on" as const,
                             }
                           : {
@@ -221,7 +230,9 @@ export function NewEventWidget({}: NewEventWidgetInput) {
                   }
                 : { recurring: "no" as const },
             show: event.showId,
-            start: event.start.replace("T", " "),
+            start: dayjs
+              .tz(event.start, event.timezone)
+              .format("YYYY-MM-DD HH:mm:ss"),
             timezone: event.timezone,
             type: event.type,
           },
@@ -290,6 +301,7 @@ export function NewEventWidget({}: NewEventWidgetInput) {
     [
       creating,
       eventsCreateMutation.mutateAsync,
+      history.entries.length,
       notifications.error,
       notifications.success,
       router,
@@ -310,24 +322,11 @@ export function NewEventWidget({}: NewEventWidgetInput) {
 
   return (
     <Stack h="100%" w="100%">
-      <Title ta="center">
-        {localization.localize(msg({ message: "Create event" }))}
-      </Title>
       <CreateEventForm
         initialValues={initialValues}
         onError={handleError}
         onSubmit={handleCreate}
       />
-      <Button
-        color="gray"
-        component={Link}
-        disabled={creating}
-        href="/events"
-        style={{ flexShrink: 0 }}
-        variant="light"
-      >
-        {localization.localize(msg({ message: "Back" }))}
-      </Button>
     </Stack>
   );
 }
