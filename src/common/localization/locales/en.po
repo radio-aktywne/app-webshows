@@ -48,9 +48,9 @@ msgstr "{0, plural, one {year} other {years}}"
 msgid "After"
 msgstr "After"
 
-#: src/client/core/components/event-widget/main.tsx:206
-#: src/client/core/components/event-widget/main.tsx:246
-#: src/client/core/components/new-event-widget/main.tsx:282
+#: src/client/core/components/event-widget/main.tsx:232
+#: src/client/core/components/event-widget/main.tsx:275
+#: src/client/core/components/new-event-widget/main.tsx:293
 #: src/client/core/components/shows-widget/main.tsx:107
 #: src/client/core/components/shows-widget/main.tsx:227
 #: src/client/core/components/shows-widget/main.tsx:293
@@ -58,36 +58,34 @@ msgstr "After"
 msgid "An unexpected error occurred"
 msgstr "An unexpected error occurred"
 
-#: src/client/core/components/event-widget/main.tsx:337
-#: src/client/core/components/new-event-widget/main.tsx:329
 #: src/client/core/components/shows-widget/components/create-show-widget/main.tsx:58
 #: src/client/core/components/shows-widget/components/edit-show-widget/main.tsx:59
 msgid "Back"
 msgstr "Back"
 
-#: src/app/(root)/layout.tsx:36
+#: src/app/(root)/layout.tsx:37
 msgid "Broadcast shows app 🎭"
 msgstr "Broadcast shows app 🎭"
 
-#: src/client/core/components/event-widget/main.tsx:198
-#: src/client/core/components/new-event-widget/main.tsx:274
+#: src/client/core/components/event-widget/main.tsx:224
+#: src/client/core/components/new-event-widget/main.tsx:285
 #: src/client/core/components/shows-widget/main.tsx:219
 #: src/client/core/components/shows-widget/main.tsx:285
 msgid "Conflicting input"
 msgstr "Conflicting input"
 
-#: src/client/core/components/list-events-widget/main.tsx:96
+#: src/client/core/components/calendar-widget/main.tsx:96
 #: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:317
 #: src/client/core/components/shows-widget/components/create-show-widget/components/create-show-form/main.tsx:50
 #: src/client/core/components/shows-widget/components/display-shows-widget/main.tsx:67
 msgid "Create"
 msgstr "Create"
 
-#: src/client/core/components/new-event-widget/main.tsx:314
+#: src/app/(root)/(core)/(master)/(detail)/@modals/events/new/page.view.tsx:27
 msgid "Create event"
 msgstr "Create event"
 
-#: src/app/(root)/(events)/(master)/(detail)/events/new/page.tsx:21
+#: src/app/(root)/(core)/(master)/(detail)/@modals/events/new/page.tsx:21
 msgid "Create event • tulip"
 msgstr "Create event • tulip"
 
@@ -95,7 +93,7 @@ msgstr "Create event • tulip"
 msgid "Create show"
 msgstr "Create show"
 
-#: src/client/core/components/event-widget/main.tsx:327
+#: src/client/core/components/event-widget/main.tsx:360
 msgid "Delete"
 msgstr "Delete"
 
@@ -104,7 +102,7 @@ msgstr "Delete"
 msgid "Description"
 msgstr "Description"
 
-#: src/client/core/components/event-widget/main.tsx:312
+#: src/app/(root)/(core)/(master)/(detail)/@modals/events/[id]/page.view.tsx:43
 msgid "Edit event"
 msgstr "Edit event"
 
@@ -117,7 +115,7 @@ msgstr "Edit show"
 msgid "End"
 msgstr "End"
 
-#: src/client/core/components/new-event-widget/main.tsx:54
+#: src/client/core/components/new-event-widget/main.tsx:60
 msgid "End time is required"
 msgstr "End time is required"
 
@@ -144,42 +142,39 @@ msgstr "Enter some value"
 msgid "Error"
 msgstr "Error"
 
-#: src/app/(root)/(events)/(master)/(detail)/error.tsx:11
+#: src/app/(root)/(core)/(master)/(detail)/@modals/error.tsx:14
+#: src/app/(root)/(core)/(master)/(detail)/error.tsx:11
 #: src/app/(root)/error.tsx:11
 msgid "Error • tulip"
 msgstr "Error • tulip"
 
-#: src/app/(root)/(events)/(master)/(detail)/events/[id]/page.tsx:42
+#: src/app/(root)/(core)/(master)/(detail)/@modals/events/[id]/page.tsx:42
 msgid "Event {eventId} • tulip"
 msgstr "Event {eventId} • tulip"
 
-#: src/client/core/components/event-widget/main.tsx:238
+#: src/client/core/components/event-widget/main.tsx:265
 msgid "Event already deleted"
 msgstr "Event already deleted"
 
-#: src/client/core/components/new-event-widget/main.tsx:183
+#: src/client/core/components/new-event-widget/main.tsx:189
 msgid "Event created"
 msgstr "Event created"
 
-#: src/client/core/components/event-widget/main.tsx:254
+#: src/client/core/components/event-widget/main.tsx:283
 msgid "Event deleted"
 msgstr "Event deleted"
 
-#: src/app/(root)/(events)/(master)/(detail)/events/[id]/not-found.view.tsx:8
+#: src/app/(root)/(core)/(master)/(detail)/@modals/events/[id]/not-found.view.tsx:9
 msgid "Event not found"
 msgstr "Event not found"
 
-#: src/app/(root)/(events)/(master)/(detail)/events/[id]/not-found.tsx:15
+#: src/app/(root)/(core)/(master)/(detail)/@modals/events/[id]/not-found.tsx:15
 msgid "Event not found • tulip"
 msgstr "Event not found • tulip"
 
-#: src/client/core/components/event-widget/main.tsx:112
+#: src/client/core/components/event-widget/main.tsx:133
 msgid "Event updated"
 msgstr "Event updated"
-
-#: src/app/(root)/(events)/(master)/(detail)/events/page.tsx:21
-msgid "Events • tulip"
-msgstr "Events • tulip"
 
 #: src/app/(root)/forbidden.tsx:10
 msgid "Forbidden • tulip"
@@ -189,19 +184,19 @@ msgstr "Forbidden • tulip"
 msgid "Info"
 msgstr "Info"
 
-#: src/client/core/components/event-widget/main.tsx:56
-#: src/client/core/components/event-widget/main.tsx:160
-#: src/client/core/components/event-widget/main.tsx:225
-#: src/client/core/components/new-event-widget/main.tsx:40
-#: src/client/core/components/new-event-widget/main.tsx:45
-#: src/client/core/components/new-event-widget/main.tsx:53
-#: src/client/core/components/new-event-widget/main.tsx:61
-#: src/client/core/components/new-event-widget/main.tsx:76
-#: src/client/core/components/new-event-widget/main.tsx:91
-#: src/client/core/components/new-event-widget/main.tsx:107
-#: src/client/core/components/new-event-widget/main.tsx:123
-#: src/client/core/components/new-event-widget/main.tsx:232
-#: src/client/core/components/new-event-widget/main.tsx:300
+#: src/client/core/components/event-widget/main.tsx:77
+#: src/client/core/components/event-widget/main.tsx:186
+#: src/client/core/components/event-widget/main.tsx:252
+#: src/client/core/components/new-event-widget/main.tsx:46
+#: src/client/core/components/new-event-widget/main.tsx:51
+#: src/client/core/components/new-event-widget/main.tsx:59
+#: src/client/core/components/new-event-widget/main.tsx:67
+#: src/client/core/components/new-event-widget/main.tsx:82
+#: src/client/core/components/new-event-widget/main.tsx:97
+#: src/client/core/components/new-event-widget/main.tsx:113
+#: src/client/core/components/new-event-widget/main.tsx:129
+#: src/client/core/components/new-event-widget/main.tsx:243
+#: src/client/core/components/new-event-widget/main.tsx:312
 #: src/client/core/components/shows-widget/components/create-show-widget/main.tsx:38
 #: src/client/core/components/shows-widget/components/edit-show-widget/main.tsx:39
 #: src/client/core/components/shows-widget/main.tsx:194
@@ -230,7 +225,7 @@ msgstr "Never"
 msgid "No"
 msgstr "No"
 
-#: src/client/core/components/list-events-widget/components/event-instance-item/main.tsx:34
+#: src/client/core/components/calendar-widget/components/instance-item/main.tsx:31
 msgid "No show"
 msgstr "No show"
 
@@ -238,7 +233,8 @@ msgstr "No show"
 msgid "No shows"
 msgstr "No shows"
 
-#: src/app/(root)/(events)/(master)/(detail)/not-found.tsx:15
+#: src/app/(root)/(core)/(master)/(detail)/@modals/not-found.tsx:15
+#: src/app/(root)/(core)/(master)/(detail)/not-found.tsx:15
 #: src/app/(root)/not-found.tsx:15
 msgid "Not Found • tulip"
 msgstr "Not Found • tulip"
@@ -248,6 +244,7 @@ msgstr "Not Found • tulip"
 msgid "On"
 msgstr "On"
 
+#: src/app/(root)/(core)/(master)/(detail)/@modals/not-found.view.tsx:8
 #: src/isomorphic/core/components/generic/not-found-widget/main.tsx:15
 msgid "Page not found"
 msgstr "Page not found"
@@ -257,24 +254,24 @@ msgstr "Page not found"
 msgid "Prerecorded"
 msgstr "Prerecorded"
 
-#: src/client/core/components/event-widget/main.tsx:60
-#: src/client/core/components/new-event-widget/main.tsx:111
+#: src/client/core/components/event-widget/main.tsx:81
+#: src/client/core/components/new-event-widget/main.tsx:117
 msgid "Recurrence end date is required"
 msgstr "Recurrence end date is required"
 
-#: src/client/core/components/new-event-widget/main.tsx:127
+#: src/client/core/components/new-event-widget/main.tsx:133
 msgid "Recurrence end times is required"
 msgstr "Recurrence end times is required"
 
-#: src/client/core/components/new-event-widget/main.tsx:95
+#: src/client/core/components/new-event-widget/main.tsx:101
 msgid "Recurrence ending condition is required"
 msgstr "Recurrence ending condition is required"
 
-#: src/client/core/components/new-event-widget/main.tsx:65
+#: src/client/core/components/new-event-widget/main.tsx:71
 msgid "Recurrence frequency is required"
 msgstr "Recurrence frequency is required"
 
-#: src/client/core/components/new-event-widget/main.tsx:80
+#: src/client/core/components/new-event-widget/main.tsx:86
 msgid "Recurrence interval is required"
 msgstr "Recurrence interval is required"
 
@@ -380,6 +377,7 @@ msgstr "Show updated"
 msgid "Shows"
 msgstr "Shows"
 
+#: src/app/(root)/(core)/(master)/(detail)/@modals/error.view.tsx:9
 #: src/isomorphic/core/components/generic/error-widget/main.tsx:16
 msgid "Something went wrong"
 msgstr "Something went wrong"
@@ -389,7 +387,7 @@ msgstr "Something went wrong"
 msgid "Start"
 msgstr "Start"
 
-#: src/client/core/components/new-event-widget/main.tsx:48
+#: src/client/core/components/new-event-widget/main.tsx:54
 msgid "Start time is required"
 msgstr "Start time is required"
 
@@ -411,7 +409,8 @@ msgstr "Timezone"
 msgid "Title"
 msgstr "Title"
 
-#: src/app/(root)/layout.tsx:42
+#: src/app/(root)/(core)/(master)/(detail)/@main/(home)/page.tsx:21
+#: src/app/(root)/layout.tsx:43
 msgid "tulip"
 msgstr "tulip"
 
@@ -420,7 +419,7 @@ msgstr "tulip"
 msgid "Type"
 msgstr "Type"
 
-#: src/client/core/components/new-event-widget/main.tsx:41
+#: src/client/core/components/new-event-widget/main.tsx:47
 msgid "Type is required"
 msgstr "Type is required"
 

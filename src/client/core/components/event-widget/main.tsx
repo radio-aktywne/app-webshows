@@ -1,9 +1,8 @@
 "use client";
 
 import { msg } from "@lingui/core/macro";
-import { Button, Stack, Title } from "@mantine/core";
+import { Button, Stack } from "@mantine/core";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
@@ -13,6 +12,7 @@ import type { EventWidgetInput } from "./types";
 import { dayjs } from "../../../../common/dates/vars/dayjs";
 import { getValidationIssue } from "../../../../common/orpc/lib/get-validation-issue";
 import { isOrpcDefinedError } from "../../../../common/orpc/lib/is-orpc-defined-error";
+import { useHistory } from "../../../../isomorphic/generic/hooks/use-history";
 import { useLocalization } from "../../../../isomorphic/localization/hooks/use-localization";
 import { useNotifications } from "../../../../isomorphic/notifications/hooks/use-notifications";
 import { orpcClientSideQueryClient } from "../../../orpc/vars/clients";
@@ -27,6 +27,7 @@ export function EventWidget({ id }: EventWidgetInput) {
 
   const router = useRouter();
 
+  const { history } = useHistory();
   const { localization } = useLocalization();
   const { notifications } = useNotifications();
 
@@ -37,11 +38,31 @@ export function EventWidget({ id }: EventWidgetInput) {
   );
 
   const eventsUpdateMutation = useMutation(
-    orpcClientSideQueryClient.core.events.update.mutationOptions(),
+    orpcClientSideQueryClient.core.events.update.mutationOptions({
+      meta: {
+        awaits: [
+          orpcClientSideQueryClient.core.events.list.key(),
+          orpcClientSideQueryClient.core.events.get.key({
+            input: { id: id },
+          }),
+          orpcClientSideQueryClient.core.instances.list.key(),
+          orpcClientSideQueryClient.core.instances.get.key({
+            input: { eventId: id },
+          }),
+        ],
+      },
+    }),
   );
 
   const eventsDeleteMutation = useMutation(
-    orpcClientSideQueryClient.core.events.delete.mutationOptions(),
+    orpcClientSideQueryClient.core.events.delete.mutationOptions({
+      meta: {
+        awaits: [
+          orpcClientSideQueryClient.core.events.list.key(),
+          orpcClientSideQueryClient.core.instances.list.key(),
+        ],
+      },
+    }),
   );
 
   const handleSave = useCallback(
@@ -111,14 +132,15 @@ export function EventWidget({ id }: EventWidgetInput) {
 
         notifications.success({ message: msg({ message: "Event updated" }) });
 
-        router.push("/events");
+        if (history.entries.length > 1) router.back();
+        else router.push("/");
 
         return {
           values: {
-            end: dayjs(event.start)
+            end: dayjs
+              .tz(event.start, event.timezone)
               .add(dayjs.duration(event.duration))
-              .toISOString()
-              .replace("T", " "),
+              .format("YYYY-MM-DD HH:mm:ss"),
             recurrence:
               event.recurrence &&
               (event.recurrence.frequency == "daily" ||
@@ -137,10 +159,12 @@ export function EventWidget({ id }: EventWidgetInput) {
                           }
                         : event.recurrence.termination?.type === "until"
                           ? {
-                              date: event.recurrence.termination.until.replace(
-                                "T",
-                                " ",
-                              ),
+                              date: dayjs
+                                .tz(
+                                  event.recurrence.termination.until,
+                                  event.timezone,
+                                )
+                                .format("YYYY-MM-DD HH:mm:ss"),
                               ends: "on" as const,
                             }
                           : {
@@ -149,7 +173,9 @@ export function EventWidget({ id }: EventWidgetInput) {
                   }
                 : { recurring: "no" as const },
             show: event.showId,
-            start: event.start.replace("T", " "),
+            start: dayjs
+              .tz(event.start, event.timezone)
+              .format("YYYY-MM-DD HH:mm:ss"),
             timezone: event.timezone,
             type: event.type,
           },
@@ -214,6 +240,7 @@ export function EventWidget({ id }: EventWidgetInput) {
     [
       deleting,
       eventsUpdateMutation.mutateAsync,
+      history.entries.length,
       notifications.error,
       notifications.success,
       router,
@@ -238,7 +265,9 @@ export function EventWidget({ id }: EventWidgetInput) {
           message: msg({ message: "Event already deleted" }),
         });
 
-        router.push("/events");
+        if (history.entries.length > 1) router.back();
+        else router.push("/");
+
         return;
       }
 
@@ -252,11 +281,14 @@ export function EventWidget({ id }: EventWidgetInput) {
     }
 
     notifications.success({ message: msg({ message: "Event deleted" }) });
-    router.push("/events");
+
+    if (history.entries.length > 1) router.back();
+    else router.push("/");
   }, [
     deleting,
     eventsDeleteMutation.mutateAsync,
     eventsGetQuery.data.id,
+    history.entries.length,
     notifications.success,
     notifications.warning,
     router,
@@ -265,10 +297,10 @@ export function EventWidget({ id }: EventWidgetInput) {
 
   const initialValues = useDeepCompareMemo(
     () => ({
-      end: dayjs(eventsGetQuery.data.start)
+      end: dayjs
+        .tz(eventsGetQuery.data.start, eventsGetQuery.data.timezone)
         .add(dayjs.duration(eventsGetQuery.data.duration))
-        .toISOString()
-        .replace("T", " "),
+        .format("YYYY-MM-DD HH:mm:ss"),
       recurrence:
         eventsGetQuery.data.recurrence &&
         (eventsGetQuery.data.recurrence.frequency == "daily" ||
@@ -287,10 +319,12 @@ export function EventWidget({ id }: EventWidgetInput) {
                     }
                   : eventsGetQuery.data.recurrence.termination?.type === "until"
                     ? {
-                        date: eventsGetQuery.data.recurrence.termination.until.replace(
-                          "T",
-                          " ",
-                        ),
+                        date: dayjs
+                          .tz(
+                            eventsGetQuery.data.recurrence.termination.until,
+                            eventsGetQuery.data.timezone,
+                          )
+                          .format("YYYY-MM-DD HH:mm:ss"),
                         ends: "on" as const,
                       }
                     : {
@@ -299,7 +333,9 @@ export function EventWidget({ id }: EventWidgetInput) {
             }
           : { recurring: "no" as const },
       show: eventsGetQuery.data.showId,
-      start: eventsGetQuery.data.start.replace("T", " "),
+      start: dayjs
+        .tz(eventsGetQuery.data.start, eventsGetQuery.data.timezone)
+        .format("YYYY-MM-DD HH:mm:ss"),
       timezone: eventsGetQuery.data.timezone,
       type: eventsGetQuery.data.type,
     }),
@@ -308,9 +344,6 @@ export function EventWidget({ id }: EventWidgetInput) {
 
   return (
     <Stack h="100%" w="100%">
-      <Title ta="center">
-        {localization.localize(msg({ message: "Edit event" }))}
-      </Title>
       <EditEventForm
         disabled={deleting}
         initialValues={initialValues}
@@ -325,16 +358,6 @@ export function EventWidget({ id }: EventWidgetInput) {
         style={{ flexShrink: 0 }}
       >
         {localization.localize(msg({ message: "Delete" }))}
-      </Button>
-      <Button
-        color="gray"
-        component={Link}
-        disabled={saving || deleting}
-        href="/events"
-        style={{ flexShrink: 0 }}
-        variant="light"
-      >
-        {localization.localize(msg({ message: "Back" }))}
       </Button>
     </Stack>
   );
