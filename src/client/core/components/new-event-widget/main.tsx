@@ -42,101 +42,6 @@ export function NewEventWidget({}: NewEventWidgetInput) {
     async ({ values }: CreateEventFormSubmitInput) => {
       if (creating) return;
 
-      if (!values.type) {
-        notifications.error({ message: msg({ message: "Invalid input" }) });
-        return { errors: { type: msg({ message: "Type is required" }) } };
-      }
-
-      if (!values.start) {
-        notifications.error({ message: msg({ message: "Invalid input" }) });
-
-        return {
-          errors: { start: msg({ message: "Start time is required" }) },
-        };
-      }
-
-      if (!values.end) {
-        notifications.error({ message: msg({ message: "Invalid input" }) });
-        return { errors: { end: msg({ message: "End time is required" }) } };
-      }
-
-      if (
-        values.recurrence.recurring === "yes" &&
-        !values.recurrence.frequency
-      ) {
-        notifications.error({ message: msg({ message: "Invalid input" }) });
-
-        return {
-          errors: {
-            "recurrence.frequency": msg({
-              message: "Recurrence frequency is required",
-            }),
-          },
-        };
-      }
-
-      if (
-        values.recurrence.recurring === "yes" &&
-        !values.recurrence.interval
-      ) {
-        notifications.error({ message: msg({ message: "Invalid input" }) });
-
-        return {
-          errors: {
-            "recurrence.interval": msg({
-              message: "Recurrence interval is required",
-            }),
-          },
-        };
-      }
-
-      if (
-        values.recurrence.recurring === "yes" &&
-        !values.recurrence.termination
-      ) {
-        notifications.error({ message: msg({ message: "Invalid input" }) });
-
-        return {
-          errors: {
-            "recurrence.termination.ends": msg({
-              message: "Recurrence ending condition is required",
-            }),
-          },
-        };
-      }
-
-      if (
-        values.recurrence.recurring === "yes" &&
-        values.recurrence.termination?.ends === "on" &&
-        !values.recurrence.termination.date
-      ) {
-        notifications.error({ message: msg({ message: "Invalid input" }) });
-
-        return {
-          errors: {
-            "recurrence.termination.date": msg({
-              message: "Recurrence end date is required",
-            }),
-          },
-        };
-      }
-
-      if (
-        values.recurrence.recurring === "yes" &&
-        values.recurrence.termination?.ends === "after" &&
-        !values.recurrence.termination.times
-      ) {
-        notifications.error({ message: msg({ message: "Invalid input" }) });
-
-        return {
-          errors: {
-            "recurrence.termination.times": msg({
-              message: "Recurrence end times is required",
-            }),
-          },
-        };
-      }
-
       setCreating(true);
 
       try {
@@ -145,41 +50,31 @@ export function NewEventWidget({}: NewEventWidgetInput) {
             duration: dayjs
               .duration(
                 dayjs
-                  .tz(values.end.replace(" ", "T"), values.timezone)
-                  .diff(
-                    dayjs.tz(values.start.replace(" ", "T"), values.timezone),
-                  ),
+                  .tz(values.end, values.timezone)
+                  .diff(dayjs.tz(values.start, values.timezone)),
               )
               .toISOString(),
             recurrence:
-              values.recurrence.recurring === "yes" &&
-              values.recurrence.frequency &&
-              values.recurrence.interval &&
-              values.recurrence.termination
+              values.recurrence.recurring === "yes"
                 ? {
                     frequency: values.recurrence.frequency,
                     interval: values.recurrence.interval,
                     termination:
-                      values.recurrence.termination.ends === "after" &&
-                      values.recurrence.termination.times
+                      values.recurrence.termination.ends === "after"
                         ? {
                             count: values.recurrence.termination.times,
                             type: "count" as const,
                           }
-                        : values.recurrence.termination.ends === "on" &&
-                            values.recurrence.termination.date
+                        : values.recurrence.termination.ends === "on"
                           ? {
                               type: "until" as const,
-                              until: values.recurrence.termination.date.replace(
-                                " ",
-                                "T",
-                              ),
+                              until: values.recurrence.termination.date,
                             }
                           : null,
                   }
                 : null,
             showId: values.show,
-            start: values.start.replace(" ", "T"),
+            start: values.start,
             timezone: values.timezone,
             type: values.type,
           },
@@ -197,7 +92,7 @@ export function NewEventWidget({}: NewEventWidgetInput) {
             end: dayjs
               .tz(event.start, event.timezone)
               .add(dayjs.duration(event.duration))
-              .format("YYYY-MM-DD HH:mm:ss"),
+              .format("YYYY-MM-DDTHH:mm:ss"),
             recurrence:
               event.recurrence &&
               (event.recurrence.frequency == "daily" ||
@@ -221,7 +116,7 @@ export function NewEventWidget({}: NewEventWidgetInput) {
                                   event.recurrence.termination.until,
                                   event.timezone,
                                 )
-                                .format("YYYY-MM-DD HH:mm:ss"),
+                                .format("YYYY-MM-DDTHH:mm:ss"),
                               ends: "on" as const,
                             }
                           : {
@@ -232,7 +127,7 @@ export function NewEventWidget({}: NewEventWidgetInput) {
             show: event.showId,
             start: dayjs
               .tz(event.start, event.timezone)
-              .format("YYYY-MM-DD HH:mm:ss"),
+              .format("YYYY-MM-DDTHH:mm:ss"),
             timezone: event.timezone,
             type: event.type,
           },
@@ -315,7 +210,9 @@ export function NewEventWidget({}: NewEventWidgetInput) {
   const initialValues = useMemo(
     () => ({
       recurrence: { recurring: "no" as const },
+      show: null,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      type: "live" as const,
     }),
     [],
   );

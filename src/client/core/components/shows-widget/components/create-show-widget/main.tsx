@@ -1,6 +1,6 @@
 import { msg } from "@lingui/core/macro";
 import { Button, Stack, Title } from "@mantine/core";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 
 import type {
   CreateShowWidgetCreateInput,
@@ -16,8 +16,6 @@ export function CreateShowWidget({ onBack, onCreate }: CreateShowWidgetInput) {
 
   const { localization } = useLocalization();
   const { notifications } = useNotifications();
-
-  const initialValues = useMemo(() => ({ description: "", title: "" }), []);
 
   const handleCreate = useCallback(
     async (input: CreateShowWidgetCreateInput) => {
@@ -43,11 +41,7 @@ export function CreateShowWidget({ onBack, onCreate }: CreateShowWidgetInput) {
       <Title ta="center">
         {localization.localize(msg({ message: "Create show" }))}
       </Title>
-      <CreateShowForm
-        initialValues={initialValues}
-        onError={handleError}
-        onSubmit={handleCreate}
-      />
+      <CreateShowForm onError={handleError} onSubmit={handleCreate} />
       <Button
         color="gray"
         disabled={creating}

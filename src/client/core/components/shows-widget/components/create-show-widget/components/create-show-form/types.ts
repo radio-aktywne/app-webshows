@@ -1,28 +1,67 @@
+import type { HasRequiredKeys } from "type-fest";
+import type * as z from "zod";
+
 import type {
+  UseFormErrorInput,
+  UseFormErrors,
   UseFormInitialValues,
   UseFormOnError,
   UseFormOnSubmit,
+  UseFormSubmitErrorOutput,
   UseFormSubmitInput,
-  UseFormValues,
+  UseFormSubmitOutput,
+  UseFormSubmitSuccessOutput,
 } from "../../../../../../../../isomorphic/core/hooks/use-form";
 import type { Schemas } from "./schemas";
 
-export type CreateShowFormSchema = typeof Schemas.Values;
+export type CreateShowFormInputSchema = typeof Schemas.Input;
 
-export type CreateShowFormValues = UseFormValues<CreateShowFormSchema>;
+export type CreateShowFormOutputSchema = typeof Schemas.Output;
 
-export type CreateShowFormInitialValues =
-  UseFormInitialValues<CreateShowFormSchema>;
+export type CreateShowFormInitialValues = UseFormInitialValues<
+  z.output<CreateShowFormInputSchema>
+>;
 
-export type CreateShowFormOnError = UseFormOnError;
+export type CreateShowFormErrorInput = UseFormErrorInput<
+  z.output<CreateShowFormInputSchema>
+>;
 
-export type CreateShowFormSubmitInput =
-  UseFormSubmitInput<CreateShowFormSchema>;
+export type CreateShowFormOnError = UseFormOnError<
+  z.output<CreateShowFormInputSchema>
+>;
 
-export type CreateShowFormOnSubmit = UseFormOnSubmit<CreateShowFormSchema>;
+export type CreateShowFormSubmitInput = UseFormSubmitInput<
+  z.output<CreateShowFormOutputSchema>
+>;
 
-export type CreateShowFormInput = {
-  initialValues: CreateShowFormValues;
+export type CreateShowFormErrors = UseFormErrors<
+  z.input<CreateShowFormInputSchema>
+>;
+
+export type CreateShowFormSubmitErrorOutput = UseFormSubmitErrorOutput<
+  z.input<CreateShowFormInputSchema>
+>;
+
+export type CreateShowFormSubmitSuccessOutput = UseFormSubmitSuccessOutput<
+  z.output<CreateShowFormInputSchema>
+>;
+
+export type CreateShowFormSubmitOutput = UseFormSubmitOutput<
+  z.input<CreateShowFormInputSchema>,
+  z.output<CreateShowFormInputSchema>
+>;
+
+export type CreateShowFormOnSubmit = UseFormOnSubmit<
+  z.input<CreateShowFormInputSchema>,
+  z.output<CreateShowFormInputSchema>,
+  z.output<CreateShowFormOutputSchema>
+>;
+
+export type CreateShowFormInput = (HasRequiredKeys<
+  z.output<CreateShowFormInputSchema>
+> extends true
+  ? { initialValues: CreateShowFormInitialValues }
+  : { initialValues?: CreateShowFormInitialValues }) & {
   onError?: CreateShowFormOnError;
   onSubmit: CreateShowFormOnSubmit;
 };

@@ -1,27 +1,67 @@
+import type { HasRequiredKeys } from "type-fest";
+import type * as z from "zod";
+
 import type {
+  UseFormErrorInput,
+  UseFormErrors,
   UseFormInitialValues,
   UseFormOnError,
   UseFormOnSubmit,
+  UseFormSubmitErrorOutput,
   UseFormSubmitInput,
-  UseFormValues,
+  UseFormSubmitOutput,
+  UseFormSubmitSuccessOutput,
 } from "../../../../../../../../isomorphic/core/hooks/use-form";
 import type { Schemas } from "./schemas";
 
-export type EditShowFormSchema = typeof Schemas.Values;
+export type EditShowFormInputSchema = typeof Schemas.Input;
 
-export type EditShowFormValues = UseFormValues<EditShowFormSchema>;
+export type EditShowFormOutputSchema = typeof Schemas.Output;
 
-export type EditShowFormInitialValues =
-  UseFormInitialValues<EditShowFormSchema>;
+export type EditShowFormInitialValues = UseFormInitialValues<
+  z.output<EditShowFormInputSchema>
+>;
 
-export type EditShowFormOnError = UseFormOnError;
+export type EditShowFormErrorInput = UseFormErrorInput<
+  z.output<EditShowFormInputSchema>
+>;
 
-export type EditShowFormSubmitInput = UseFormSubmitInput<EditShowFormSchema>;
+export type EditShowFormOnError = UseFormOnError<
+  z.output<EditShowFormInputSchema>
+>;
 
-export type EditShowFormOnSubmit = UseFormOnSubmit<EditShowFormSchema>;
+export type EditShowFormSubmitInput = UseFormSubmitInput<
+  z.output<EditShowFormOutputSchema>
+>;
 
-export type EditShowFormInput = {
-  initialValues: EditShowFormValues;
+export type EditShowFormErrors = UseFormErrors<
+  z.input<EditShowFormInputSchema>
+>;
+
+export type EditShowFormSubmitErrorOutput = UseFormSubmitErrorOutput<
+  z.input<EditShowFormInputSchema>
+>;
+
+export type EditShowFormSubmitSuccessOutput = UseFormSubmitSuccessOutput<
+  z.output<EditShowFormInputSchema>
+>;
+
+export type EditShowFormSubmitOutput = UseFormSubmitOutput<
+  z.input<EditShowFormInputSchema>,
+  z.output<EditShowFormInputSchema>
+>;
+
+export type EditShowFormOnSubmit = UseFormOnSubmit<
+  z.input<EditShowFormInputSchema>,
+  z.output<EditShowFormInputSchema>,
+  z.output<EditShowFormOutputSchema>
+>;
+
+export type EditShowFormInput = (HasRequiredKeys<
+  z.output<EditShowFormInputSchema>
+> extends true
+  ? { initialValues: EditShowFormInitialValues }
+  : { initialValues?: EditShowFormInitialValues }) & {
   onError?: EditShowFormOnError;
   onSubmit: EditShowFormOnSubmit;
 };

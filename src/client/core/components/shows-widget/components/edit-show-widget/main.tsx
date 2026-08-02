@@ -16,7 +16,7 @@ export function EditShowWidget({ onBack, onSave, show }: EditShowWidgetInput) {
   const { notifications } = useNotifications();
 
   const initialValues = useDeepCompareMemo(
-    () => ({ description: show.description ?? "", title: show.title }),
+    () => ({ description: show.description, title: show.title }),
     [show],
   );
 

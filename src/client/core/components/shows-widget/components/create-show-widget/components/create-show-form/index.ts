@@ -1,9 +1,15 @@
 export { CreateShowForm } from "./main";
 export type {
+  CreateShowFormErrorInput,
+  CreateShowFormErrors,
   CreateShowFormInitialValues,
   CreateShowFormInput,
+  CreateShowFormInputSchema,
   CreateShowFormOnError,
   CreateShowFormOnSubmit,
+  CreateShowFormOutputSchema,
+  CreateShowFormSubmitErrorOutput,
   CreateShowFormSubmitInput,
-  CreateShowFormValues,
+  CreateShowFormSubmitOutput,
+  CreateShowFormSubmitSuccessOutput,
 } from "./types";

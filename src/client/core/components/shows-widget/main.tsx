@@ -172,7 +172,7 @@ export function ShowsWidget({ limit, order }: ShowsWidgetInput) {
       try {
         const show = await showsUpdateMutation.mutateAsync({
           data: {
-            description: values.description || null,
+            description: values.description,
             title: values.title,
           },
           id: state.show.id,
@@ -184,7 +184,7 @@ export function ShowsWidget({ limit, order }: ShowsWidgetInput) {
 
         return {
           values: {
-            description: show.description ?? "",
+            description: show.description,
             title: show.title,
           },
         };
@@ -248,7 +248,7 @@ export function ShowsWidget({ limit, order }: ShowsWidgetInput) {
       try {
         const show = await showsCreateMutation.mutateAsync({
           data: {
-            description: values.description || null,
+            description: values.description,
             title: values.title,
           },
         });
@@ -259,7 +259,7 @@ export function ShowsWidget({ limit, order }: ShowsWidgetInput) {
 
         return {
           values: {
-            description: show.description ?? "",
+            description: show.description,
             title: show.title,
           },
         };

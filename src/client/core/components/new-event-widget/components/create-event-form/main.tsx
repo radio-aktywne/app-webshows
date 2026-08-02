@@ -10,6 +10,7 @@ import {
 } from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { isString } from "es-toolkit/predicate";
 import { useState } from "react";
 
 import type { CreateEventFormInput } from "./types";
@@ -36,48 +37,11 @@ export function CreateEventForm({
 
   const { form, handleFormSubmit, submitting } = useForm({
     initialValues: initialValues,
+    inputSchema: Schemas.Input,
     onError: onError,
     onSubmit: onSubmit,
-    onValuesChange: (current, previous) => {
-      if (current.recurrence.recurring !== previous.recurrence.recurring) {
-        switch (current.recurrence.recurring) {
-          case "no":
-            form.setFieldValue("recurrence", { recurring: "no" });
-            return;
-          case "yes":
-            form.setFieldValue("recurrence", {
-              frequency: "daily",
-              interval: 1,
-              recurring: "yes",
-              termination: { ends: "never" },
-            });
-            return;
-        }
-      } else if (
-        current.recurrence.recurring === "yes" &&
-        previous.recurrence.recurring === "yes" &&
-        current.recurrence.termination?.ends !==
-          previous.recurrence.termination?.ends
-      ) {
-        switch (current.recurrence.termination?.ends) {
-          case "after":
-            form.setFieldValue("recurrence.termination", {
-              ends: "after",
-              times: 1,
-            });
-            return;
-          case "never":
-            form.setFieldValue("recurrence.termination", { ends: "never" });
-            return;
-          case "on":
-            form.setFieldValue("recurrence.termination", { ends: "on" });
-            return;
-        }
-      }
-
-      setValues(current);
-    },
-    schema: Schemas.Values,
+    onValuesChange: ({ current }) => setValues(current),
+    outputSchema: Schemas.Output,
   });
 
   return (
@@ -97,6 +61,9 @@ export function CreateEventForm({
             value: "replay",
           },
         ]}
+        errorProps={{
+          title: [form.getInputProps("type").error].find(isString),
+        }}
         key={form.key("type")}
         label={localization.localize(msg({ message: "Type" }))}
         placeholder={localization.localize(msg({ message: "Select type" }))}
@@ -108,6 +75,9 @@ export function CreateEventForm({
           label: show.title,
           value: show.id,
         }))}
+        errorProps={{
+          title: [form.getInputProps("show").error].find(isString),
+        }}
         key={form.key("show")}
         label={localization.localize(msg({ message: "Show" }))}
         placeholder={localization.localize(msg({ message: "Select show" }))}
@@ -119,6 +89,9 @@ export function CreateEventForm({
           label: timezone,
           value: timezone,
         }))}
+        errorProps={{
+          title: [form.getInputProps("timezone").error].find(isString),
+        }}
         key={form.key("timezone")}
         label={localization.localize(msg({ message: "Timezone" }))}
         placeholder={localization.localize(msg({ message: "Select timezone" }))}
@@ -127,6 +100,9 @@ export function CreateEventForm({
       />
       <DateTimePicker
         dropdownType="modal"
+        errorProps={{
+          title: [form.getInputProps("start").error].find(isString),
+        }}
         key={form.key("start")}
         label={localization.localize(msg({ message: "Start" }))}
         placeholder={localization.localize(
@@ -138,6 +114,9 @@ export function CreateEventForm({
       />
       <DateTimePicker
         dropdownType="modal"
+        errorProps={{
+          title: [form.getInputProps("end").error].find(isString),
+        }}
         key={form.key("end")}
         label={localization.localize(msg({ message: "End" }))}
         placeholder={localization.localize(
@@ -158,6 +137,11 @@ export function CreateEventForm({
             value: "no",
           },
         ]}
+        errorProps={{
+          title: [form.getInputProps("recurrence.recurring").error].find(
+            isString,
+          ),
+        }}
         key={form.key("recurrence.recurring")}
         label={localization.localize(msg({ message: "Recurring" }))}
         placeholder={localization.localize(
@@ -165,6 +149,25 @@ export function CreateEventForm({
         )}
         required={true}
         {...form.getInputProps("recurrence.recurring")}
+        onChange={(value) => {
+          const values = form.getValues();
+
+          if (value === values.recurrence.recurring) return;
+
+          switch (value) {
+            case "no":
+              form.setFieldValue("recurrence", { recurring: "no" });
+              return;
+            case "yes":
+              form.setFieldValue("recurrence", {
+                frequency: "daily",
+                interval: 1,
+                recurring: "yes",
+                termination: { ends: "never" },
+              });
+              return;
+          }
+        }}
       />
       {values.recurrence.recurring === "yes" && (
         <>
@@ -174,6 +177,11 @@ export function CreateEventForm({
           >
             <Group align="start">
               <NumberInput
+                errorProps={{
+                  title: [form.getInputProps("recurrence.interval").error].find(
+                    isString,
+                  ),
+                }}
                 inputSize="5"
                 key={form.key("recurrence.interval")}
                 min={1}
@@ -228,6 +236,11 @@ export function CreateEventForm({
                     value: "yearly",
                   },
                 ]}
+                errorProps={{
+                  title: [
+                    form.getInputProps("recurrence.frequency").error,
+                  ].find(isString),
+                }}
                 key={form.key("recurrence.frequency")}
                 placeholder={localization.localize(
                   msg({ message: "Select frequency" }),
@@ -258,6 +271,11 @@ export function CreateEventForm({
                     value: "after",
                   },
                 ]}
+                errorProps={{
+                  title: [
+                    form.getInputProps("recurrence.termination.ends").error,
+                  ].find(isString),
+                }}
                 key={form.key("recurrence.termination.ends")}
                 placeholder={localization.localize(
                   msg({ message: "Select ending condition" }),
@@ -265,10 +283,44 @@ export function CreateEventForm({
                 required={true}
                 style={{ flexGrow: 1 }}
                 {...form.getInputProps("recurrence.termination.ends")}
+                onChange={(value) => {
+                  const values = form.getValues();
+
+                  if (
+                    values.recurrence.recurring === "no" ||
+                    value === values.recurrence.termination.ends
+                  )
+                    return;
+
+                  switch (value) {
+                    case "after":
+                      form.setFieldValue("recurrence.termination", {
+                        ends: "after",
+                        times: 1,
+                      });
+                      return;
+                    case "never":
+                      form.setFieldValue("recurrence.termination", {
+                        ends: "never",
+                      });
+                      return;
+                    case "on":
+                      form.setFieldValue("recurrence.termination", {
+                        date: null,
+                        ends: "on",
+                      });
+                      return;
+                  }
+                }}
               />
               {values.recurrence.termination?.ends === "on" && (
                 <DateTimePicker
                   dropdownType="modal"
+                  errorProps={{
+                    title: [
+                      form.getInputProps("recurrence.termination.date").error,
+                    ].find(isString),
+                  }}
                   key={form.key("recurrence.termination.date")}
                   placeholder={localization.localize(
                     msg({ message: "Select recurrence end date and time" }),
@@ -282,6 +334,12 @@ export function CreateEventForm({
               {values.recurrence.termination?.ends === "after" && (
                 <SimpleGrid cols={2} style={{ alignItems: "center" }}>
                   <NumberInput
+                    errorProps={{
+                      title: [
+                        form.getInputProps("recurrence.termination.times")
+                          .error,
+                      ].find(isString),
+                    }}
                     inputSize="5"
                     key={form.key("recurrence.termination.times")}
                     min={1}
