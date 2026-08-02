@@ -14,51 +14,51 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. placeholder {0}: values.recurrence.interval ?? 1
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:190
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:188
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:198
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:196
 msgid "{0, plural, one {day} other {days}}"
 msgstr "{0, plural, one {day} other {days}}"
 
 #. placeholder {0}: values.recurrence.interval ?? 1
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:212
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:210
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:220
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:218
 msgid "{0, plural, one {month} other {months}}"
 msgstr "{0, plural, one {month} other {months}}"
 
 #. placeholder {0}: values.recurrence.termination?.times ?? 1
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:296
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:294
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:354
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:352
 msgid "{0, plural, one {time} other {times}}"
 msgstr "{0, plural, one {time} other {times}}"
 
 #. placeholder {0}: values.recurrence.interval ?? 1
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:201
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:199
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:209
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:207
 msgid "{0, plural, one {week} other {weeks}}"
 msgstr "{0, plural, one {week} other {weeks}}"
 
 #. placeholder {0}: values.recurrence.interval ?? 1
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:223
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:221
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:231
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:229
 msgid "{0, plural, one {year} other {years}}"
 msgstr "{0, plural, one {year} other {years}}"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:259
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:257
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:272
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:270
 msgid "After"
 msgstr "After"
 
-#: src/client/core/components/event-widget/main.tsx:232
-#: src/client/core/components/event-widget/main.tsx:275
-#: src/client/core/components/new-event-widget/main.tsx:293
+#: src/client/core/components/event-widget/main.tsx:209
+#: src/client/core/components/event-widget/main.tsx:252
+#: src/client/core/components/new-event-widget/main.tsx:188
 #: src/client/core/components/shows-widget/main.tsx:107
 #: src/client/core/components/shows-widget/main.tsx:227
 #: src/client/core/components/shows-widget/main.tsx:293
-#: src/client/test/components/test-widget/main.tsx:52
+#: src/client/test/components/test-widget/main.tsx:50
 msgid "An unexpected error occurred"
 msgstr "An unexpected error occurred"
 
-#: src/client/core/components/shows-widget/components/create-show-widget/main.tsx:58
+#: src/client/core/components/shows-widget/components/create-show-widget/main.tsx:52
 #: src/client/core/components/shows-widget/components/edit-show-widget/main.tsx:59
 msgid "Back"
 msgstr "Back"
@@ -67,16 +67,16 @@ msgstr "Back"
 msgid "Broadcast shows app 🎭"
 msgstr "Broadcast shows app 🎭"
 
-#: src/client/core/components/event-widget/main.tsx:224
-#: src/client/core/components/new-event-widget/main.tsx:285
+#: src/client/core/components/event-widget/main.tsx:201
+#: src/client/core/components/new-event-widget/main.tsx:180
 #: src/client/core/components/shows-widget/main.tsx:219
 #: src/client/core/components/shows-widget/main.tsx:285
 msgid "Conflicting input"
 msgstr "Conflicting input"
 
 #: src/client/core/components/calendar-widget/main.tsx:96
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:317
-#: src/client/core/components/shows-widget/components/create-show-widget/components/create-show-form/main.tsx:50
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:375
+#: src/client/core/components/shows-widget/components/create-show-widget/components/create-show-form/main.tsx:58
 #: src/client/core/components/shows-widget/components/display-shows-widget/main.tsx:67
 msgid "Create"
 msgstr "Create"
@@ -89,16 +89,16 @@ msgstr "Create event"
 msgid "Create event • tulip"
 msgstr "Create event • tulip"
 
-#: src/client/core/components/shows-widget/components/create-show-widget/main.tsx:44
+#: src/client/core/components/shows-widget/components/create-show-widget/main.tsx:42
 msgid "Create show"
 msgstr "Create show"
 
-#: src/client/core/components/event-widget/main.tsx:360
+#: src/client/core/components/event-widget/main.tsx:337
 msgid "Delete"
 msgstr "Delete"
 
-#: src/client/core/components/shows-widget/components/create-show-widget/components/create-show-form/main.tsx:37
-#: src/client/core/components/shows-widget/components/edit-show-widget/components/edit-show-form/main.tsx:37
+#: src/client/core/components/shows-widget/components/create-show-widget/components/create-show-form/main.tsx:45
+#: src/client/core/components/shows-widget/components/edit-show-widget/components/edit-show-form/main.tsx:45
 msgid "Description"
 msgstr "Description"
 
@@ -110,31 +110,27 @@ msgstr "Edit event"
 msgid "Edit show"
 msgstr "Edit show"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:144
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:142
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:123
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:121
 msgid "End"
 msgstr "End"
 
-#: src/client/core/components/new-event-widget/main.tsx:60
-msgid "End time is required"
-msgstr "End time is required"
-
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:244
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:242
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:257
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:255
 msgid "Ends"
 msgstr "Ends"
 
-#: src/client/core/components/shows-widget/components/create-show-widget/components/create-show-form/main.tsx:39
-#: src/client/core/components/shows-widget/components/edit-show-widget/components/edit-show-form/main.tsx:39
+#: src/client/core/components/shows-widget/components/create-show-widget/components/create-show-form/main.tsx:47
+#: src/client/core/components/shows-widget/components/edit-show-widget/components/edit-show-form/main.tsx:47
 msgid "Enter show description"
 msgstr "Enter show description"
 
-#: src/client/core/components/shows-widget/components/create-show-widget/components/create-show-form/main.tsx:30
-#: src/client/core/components/shows-widget/components/edit-show-widget/components/edit-show-form/main.tsx:30
+#: src/client/core/components/shows-widget/components/create-show-widget/components/create-show-form/main.tsx:35
+#: src/client/core/components/shows-widget/components/edit-show-widget/components/edit-show-form/main.tsx:35
 msgid "Enter show title"
 msgstr "Enter show title"
 
-#: src/client/test/components/test-widget/components/test-form/main.tsx:25
+#: src/client/test/components/test-widget/components/test-form/main.tsx:30
 msgid "Enter some value"
 msgstr "Enter some value"
 
@@ -152,15 +148,15 @@ msgstr "Error • tulip"
 msgid "Event {eventId} • tulip"
 msgstr "Event {eventId} • tulip"
 
-#: src/client/core/components/event-widget/main.tsx:265
+#: src/client/core/components/event-widget/main.tsx:242
 msgid "Event already deleted"
 msgstr "Event already deleted"
 
-#: src/client/core/components/new-event-widget/main.tsx:189
+#: src/client/core/components/new-event-widget/main.tsx:84
 msgid "Event created"
 msgstr "Event created"
 
-#: src/client/core/components/event-widget/main.tsx:283
+#: src/client/core/components/event-widget/main.tsx:260
 msgid "Event deleted"
 msgstr "Event deleted"
 
@@ -172,7 +168,7 @@ msgstr "Event not found"
 msgid "Event not found • tulip"
 msgstr "Event not found • tulip"
 
-#: src/client/core/components/event-widget/main.tsx:133
+#: src/client/core/components/event-widget/main.tsx:110
 msgid "Event updated"
 msgstr "Event updated"
 
@@ -184,30 +180,21 @@ msgstr "Forbidden • tulip"
 msgid "Info"
 msgstr "Info"
 
-#: src/client/core/components/event-widget/main.tsx:77
-#: src/client/core/components/event-widget/main.tsx:186
-#: src/client/core/components/event-widget/main.tsx:252
-#: src/client/core/components/new-event-widget/main.tsx:46
-#: src/client/core/components/new-event-widget/main.tsx:51
-#: src/client/core/components/new-event-widget/main.tsx:59
-#: src/client/core/components/new-event-widget/main.tsx:67
-#: src/client/core/components/new-event-widget/main.tsx:82
-#: src/client/core/components/new-event-widget/main.tsx:97
-#: src/client/core/components/new-event-widget/main.tsx:113
-#: src/client/core/components/new-event-widget/main.tsx:129
-#: src/client/core/components/new-event-widget/main.tsx:243
-#: src/client/core/components/new-event-widget/main.tsx:312
-#: src/client/core/components/shows-widget/components/create-show-widget/main.tsx:38
+#: src/client/core/components/event-widget/main.tsx:163
+#: src/client/core/components/event-widget/main.tsx:229
+#: src/client/core/components/new-event-widget/main.tsx:138
+#: src/client/core/components/new-event-widget/main.tsx:207
+#: src/client/core/components/shows-widget/components/create-show-widget/main.tsx:36
 #: src/client/core/components/shows-widget/components/edit-show-widget/main.tsx:39
 #: src/client/core/components/shows-widget/main.tsx:194
 #: src/client/core/components/shows-widget/main.tsx:269
-#: src/client/test/components/test-widget/main.tsx:41
-#: src/client/test/components/test-widget/main.tsx:62
+#: src/client/test/components/test-widget/main.tsx:39
+#: src/client/test/components/test-widget/main.tsx:60
 msgid "Invalid input"
 msgstr "Invalid input"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:89
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:88
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:53
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:52
 msgid "Live"
 msgstr "Live"
 
@@ -215,13 +202,13 @@ msgstr "Live"
 msgid "Logout"
 msgstr "Logout"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:251
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:249
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:264
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:262
 msgid "Never"
 msgstr "Never"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:159
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:157
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:138
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:136
 msgid "No"
 msgstr "No"
 
@@ -239,8 +226,8 @@ msgstr "No shows"
 msgid "Not Found • tulip"
 msgstr "Not Found • tulip"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:255
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:253
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:268
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:266
 msgid "On"
 msgstr "On"
 
@@ -249,44 +236,23 @@ msgstr "On"
 msgid "Page not found"
 msgstr "Page not found"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:93
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:92
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:57
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:56
 msgid "Prerecorded"
 msgstr "Prerecorded"
 
-#: src/client/core/components/event-widget/main.tsx:81
-#: src/client/core/components/new-event-widget/main.tsx:117
-msgid "Recurrence end date is required"
-msgstr "Recurrence end date is required"
-
-#: src/client/core/components/new-event-widget/main.tsx:133
-msgid "Recurrence end times is required"
-msgstr "Recurrence end times is required"
-
-#: src/client/core/components/new-event-widget/main.tsx:101
-msgid "Recurrence ending condition is required"
-msgstr "Recurrence ending condition is required"
-
-#: src/client/core/components/new-event-widget/main.tsx:71
-msgid "Recurrence frequency is required"
-msgstr "Recurrence frequency is required"
-
-#: src/client/core/components/new-event-widget/main.tsx:86
-msgid "Recurrence interval is required"
-msgstr "Recurrence interval is required"
-
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:164
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:162
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:148
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:146
 msgid "Recurring"
 msgstr "Recurring"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:174
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:172
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:177
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:175
 msgid "Repeat every"
 msgstr "Repeat every"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:97
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:96
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:61
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:60
 msgid "Replay"
 msgstr "Replay"
 
@@ -294,8 +260,8 @@ msgstr "Replay"
 msgid "Retry"
 msgstr "Retry"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:320
-#: src/client/core/components/shows-widget/components/edit-show-widget/components/edit-show-form/main.tsx:50
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:378
+#: src/client/core/components/shows-widget/components/edit-show-widget/components/edit-show-form/main.tsx:58
 msgid "Save"
 msgstr "Save"
 
@@ -303,53 +269,53 @@ msgstr "Save"
 msgid "Search shows"
 msgstr "Search shows"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:146
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:144
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:125
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:123
 msgid "Select end date and time"
 msgstr "Select end date and time"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:265
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:263
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:283
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:281
 msgid "Select ending condition"
 msgstr "Select ending condition"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:235
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:233
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:248
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:246
 msgid "Select frequency"
 msgstr "Select frequency"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:166
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:164
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:150
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:148
 msgid "Select if the event is recurring"
 msgstr "Select if the event is recurring"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:276
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:274
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:328
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:326
 msgid "Select recurrence end date and time"
 msgstr "Select recurrence end date and time"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:115
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:113
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:85
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:83
 msgid "Select show"
 msgstr "Select show"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:135
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:133
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:111
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:109
 msgid "Select start date and time"
 msgstr "Select start date and time"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:126
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:124
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:99
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:97
 msgid "Select timezone"
 msgstr "Select timezone"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:103
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:102
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:70
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:69
 msgid "Select type"
 msgstr "Select type"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:114
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:112
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:84
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:82
 msgid "Show"
 msgstr "Show"
 
@@ -382,16 +348,12 @@ msgstr "Shows"
 msgid "Something went wrong"
 msgstr "Something went wrong"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:133
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:131
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:109
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:107
 msgid "Start"
 msgstr "Start"
 
-#: src/client/core/components/new-event-widget/main.tsx:54
-msgid "Start time is required"
-msgstr "Start time is required"
-
-#: src/client/test/components/test-widget/components/test-form/main.tsx:30
+#: src/client/test/components/test-widget/components/test-form/main.tsx:36
 msgid "Submit"
 msgstr "Submit"
 
@@ -399,13 +361,13 @@ msgstr "Submit"
 msgid "Success"
 msgstr "Success"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:125
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:123
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:98
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:96
 msgid "Timezone"
 msgstr "Timezone"
 
-#: src/client/core/components/shows-widget/components/create-show-widget/components/create-show-form/main.tsx:28
-#: src/client/core/components/shows-widget/components/edit-show-widget/components/edit-show-form/main.tsx:28
+#: src/client/core/components/shows-widget/components/create-show-widget/components/create-show-form/main.tsx:33
+#: src/client/core/components/shows-widget/components/edit-show-widget/components/edit-show-form/main.tsx:33
 msgid "Title"
 msgstr "Title"
 
@@ -414,14 +376,10 @@ msgstr "Title"
 msgid "tulip"
 msgstr "tulip"
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:102
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:101
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:69
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:68
 msgid "Type"
 msgstr "Type"
-
-#: src/client/core/components/new-event-widget/main.tsx:47
-msgid "Type is required"
-msgstr "Type is required"
 
 #: src/isomorphic/notifications/hooks/use-notifications/main.ts:73
 msgid "Warning"
@@ -431,8 +389,8 @@ msgstr "Warning"
 msgid "Why did the chicken cross the road? To get to the other side."
 msgstr "Why did the chicken cross the road? To get to the other side."
 
-#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:155
-#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:153
+#: src/client/core/components/event-widget/components/edit-event-form/main.tsx:134
+#: src/client/core/components/new-event-widget/components/create-event-form/main.tsx:132
 msgid "Yes"
 msgstr "Yes"
 

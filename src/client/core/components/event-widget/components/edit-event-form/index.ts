@@ -1,9 +1,16 @@
 export { EditEventForm } from "./main";
 export type {
+  EditEventFormDisabled,
+  EditEventFormErrorInput,
+  EditEventFormErrors,
   EditEventFormInitialValues,
   EditEventFormInput,
+  EditEventFormInputSchema,
   EditEventFormOnError,
   EditEventFormOnSubmit,
+  EditEventFormOutputSchema,
+  EditEventFormSubmitErrorOutput,
   EditEventFormSubmitInput,
-  EditEventFormValues,
+  EditEventFormSubmitOutput,
+  EditEventFormSubmitSuccessOutput,
 } from "./types";

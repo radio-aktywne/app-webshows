@@ -69,22 +69,6 @@ export function EventWidget({ id }: EventWidgetInput) {
     async ({ values }: EditEventFormSubmitInput) => {
       if (saving || deleting) return;
 
-      if (
-        values.recurrence.recurring === "yes" &&
-        values.recurrence.termination.ends === "on" &&
-        !values.recurrence.termination.date
-      ) {
-        notifications.error({ message: msg({ message: "Invalid input" }) });
-
-        return {
-          errors: {
-            "recurrence.termination.date": msg({
-              message: "Recurrence end date is required",
-            }),
-          },
-        };
-      }
-
       setSaving(true);
 
       try {
@@ -93,10 +77,8 @@ export function EventWidget({ id }: EventWidgetInput) {
             duration: dayjs
               .duration(
                 dayjs
-                  .tz(values.end.replace(" ", "T"), values.timezone)
-                  .diff(
-                    dayjs.tz(values.start.replace(" ", "T"), values.timezone),
-                  ),
+                  .tz(values.end, values.timezone)
+                  .diff(dayjs.tz(values.start, values.timezone)),
               )
               .toISOString(),
             recurrence:
@@ -105,25 +87,20 @@ export function EventWidget({ id }: EventWidgetInput) {
                     frequency: values.recurrence.frequency,
                     interval: values.recurrence.interval,
                     termination:
-                      values.recurrence.termination.ends === "after" &&
-                      values.recurrence.termination.times
+                      values.recurrence.termination.ends === "after"
                         ? {
                             count: values.recurrence.termination.times,
                             type: "count" as const,
                           }
-                        : values.recurrence.termination.ends === "on" &&
-                            values.recurrence.termination.date
+                        : values.recurrence.termination.ends === "on"
                           ? {
                               type: "until" as const,
-                              until: values.recurrence.termination.date.replace(
-                                " ",
-                                "T",
-                              ),
+                              until: values.recurrence.termination.date,
                             }
                           : null,
                   }
                 : null,
-            start: values.start.replace(" ", "T"),
+            start: values.start,
             timezone: values.timezone,
             type: values.type,
           },
@@ -140,7 +117,7 @@ export function EventWidget({ id }: EventWidgetInput) {
             end: dayjs
               .tz(event.start, event.timezone)
               .add(dayjs.duration(event.duration))
-              .format("YYYY-MM-DD HH:mm:ss"),
+              .format("YYYY-MM-DDTHH:mm:ss"),
             recurrence:
               event.recurrence &&
               (event.recurrence.frequency == "daily" ||
@@ -164,7 +141,7 @@ export function EventWidget({ id }: EventWidgetInput) {
                                   event.recurrence.termination.until,
                                   event.timezone,
                                 )
-                                .format("YYYY-MM-DD HH:mm:ss"),
+                                .format("YYYY-MM-DDTHH:mm:ss"),
                               ends: "on" as const,
                             }
                           : {
@@ -175,7 +152,7 @@ export function EventWidget({ id }: EventWidgetInput) {
             show: event.showId,
             start: dayjs
               .tz(event.start, event.timezone)
-              .format("YYYY-MM-DD HH:mm:ss"),
+              .format("YYYY-MM-DDTHH:mm:ss"),
             timezone: event.timezone,
             type: event.type,
           },
@@ -300,7 +277,7 @@ export function EventWidget({ id }: EventWidgetInput) {
       end: dayjs
         .tz(eventsGetQuery.data.start, eventsGetQuery.data.timezone)
         .add(dayjs.duration(eventsGetQuery.data.duration))
-        .format("YYYY-MM-DD HH:mm:ss"),
+        .format("YYYY-MM-DDTHH:mm:ss"),
       recurrence:
         eventsGetQuery.data.recurrence &&
         (eventsGetQuery.data.recurrence.frequency == "daily" ||
@@ -324,7 +301,7 @@ export function EventWidget({ id }: EventWidgetInput) {
                             eventsGetQuery.data.recurrence.termination.until,
                             eventsGetQuery.data.timezone,
                           )
-                          .format("YYYY-MM-DD HH:mm:ss"),
+                          .format("YYYY-MM-DDTHH:mm:ss"),
                         ends: "on" as const,
                       }
                     : {
@@ -335,7 +312,7 @@ export function EventWidget({ id }: EventWidgetInput) {
       show: eventsGetQuery.data.showId,
       start: dayjs
         .tz(eventsGetQuery.data.start, eventsGetQuery.data.timezone)
-        .format("YYYY-MM-DD HH:mm:ss"),
+        .format("YYYY-MM-DDTHH:mm:ss"),
       timezone: eventsGetQuery.data.timezone,
       type: eventsGetQuery.data.type,
     }),
