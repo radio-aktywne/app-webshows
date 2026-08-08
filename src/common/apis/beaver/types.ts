@@ -2481,7 +2481,25 @@ export type GetResponseShow = {
   events: Array<ShowsModelsEvent> | null;
 };
 
-export type GetResponseInstance = Instance | null;
+/**
+ * Instance
+ *
+ * Instance data.
+ */
+export type GetResponseInstance = {
+  start: InstancesModelsNaiveDatetime;
+  duration: InstancesModelsTimedelta;
+  /**
+   * Eventid
+   *
+   * Identifier of the event the instance belongs to.
+   */
+  eventId: string;
+  /**
+   * Event the instance belongs to.
+   */
+  event: InstancesModelsEvent | null;
+};
 
 /**
  * Datetime without timezone.

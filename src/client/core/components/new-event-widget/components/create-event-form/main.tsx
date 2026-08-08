@@ -1,17 +1,21 @@
 import { msg, plural } from "@lingui/core/macro";
 import {
+  ActionIcon,
   Button,
   Group,
   InputWrapper,
   NumberInput,
   Select,
   SimpleGrid,
+  Stack,
   Text,
 } from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
+import { randomId } from "@mantine/hooks";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { isString } from "es-toolkit/predicate";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { MdAdd, MdClose } from "react-icons/md";
 
 import type { CreateEventFormInput } from "./types";
 
@@ -26,6 +30,11 @@ export function CreateEventForm({
   onSubmit,
 }: CreateEventFormInput) {
   const [values, setValues] = useState(initialValues);
+  const [includeKeys, setIncludeKeys] = useState(
+    initialValues.include?.map(() => randomId()) ?? [],
+  );
+
+  const timezones = useMemo(() => Intl.supportedValuesOf("timeZone"), []);
 
   const { localization } = useLocalization();
 
@@ -39,7 +48,14 @@ export function CreateEventForm({
     initialValues: initialValues,
     inputSchema: Schemas.Input,
     onError: onError,
-    onSubmit: onSubmit,
+    onSubmit: async (currentValues) => {
+      const result = await onSubmit?.(currentValues);
+
+      if (result?.values?.include)
+        setIncludeKeys(result.values.include.map(() => randomId()));
+
+      return result;
+    },
     onValuesChange: ({ current }) => setValues(current),
     outputSchema: Schemas.Output,
   });
@@ -85,7 +101,7 @@ export function CreateEventForm({
         {...form.getInputProps("show")}
       />
       <Select
-        data={Intl.supportedValuesOf("timeZone").map((timezone) => ({
+        data={timezones.map((timezone) => ({
           label: timezone,
           value: timezone,
         }))}
@@ -366,6 +382,72 @@ export function CreateEventForm({
           </InputWrapper>
         </>
       )}
+      <InputWrapper
+        label={localization.localize(msg({ message: "Additional instances" }))}
+        required={false}
+      >
+        <Stack>
+          {values.include?.map((_, index) => (
+            <Group align="start" gap="xs" key={includeKeys[index]}>
+              <DateTimePicker
+                dropdownType="modal"
+                errorProps={{
+                  title: [
+                    form.getInputProps(`include.${index}.start`).error,
+                  ].find(isString),
+                }}
+                key={form.key(`include.${index}.start`)}
+                placeholder={localization.localize(
+                  msg({ message: "Select start date and time" }),
+                )}
+                required={true}
+                style={{ flexGrow: 1 }}
+                valueFormat="LLL"
+                {...form.getInputProps(`include.${index}.start`)}
+              />
+              <ActionIcon
+                color="dark.1"
+                onClick={() => {
+                  const before = form.getValues();
+
+                  if (before.include && before.include.length > index)
+                    form.removeListItem("include", index);
+
+                  const after = form.getValues();
+
+                  if (after.include?.length === 0)
+                    form.setFieldValue("include", null);
+
+                  setIncludeKeys((prev) => prev.filter((_, i) => i !== index));
+                }}
+                size="input-sm"
+                title={localization.localize(msg({ message: "Remove" }))}
+                variant="subtle"
+              >
+                <MdClose size="1.25em" />
+              </ActionIcon>
+            </Group>
+          ))}
+          <Button
+            disabled={submitting}
+            leftSection={<MdAdd size="1.25em" />}
+            onClick={() => {
+              const values = form.getValues();
+              const item = { start: null };
+              const id = randomId();
+
+              if (values.include) form.insertListItem("include", item);
+              else form.setFieldValue("include", [item]);
+
+              setIncludeKeys((prev) => [...prev, id]);
+            }}
+            style={{ flexShrink: 0 }}
+            variant="default"
+          >
+            {localization.localize(msg({ message: "Add instance" }))}
+          </Button>
+        </Stack>
+      </InputWrapper>
       <Button
         loading={submitting}
         mt="auto"

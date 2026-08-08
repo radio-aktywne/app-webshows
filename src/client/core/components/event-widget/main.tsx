@@ -10,6 +10,7 @@ import { useDeepCompareMemo } from "use-deep-compare";
 import type { EventWidgetInput } from "./types";
 
 import { dayjs } from "../../../../common/dates/vars/dayjs";
+import { createUrl } from "../../../../common/generic/lib/create-url";
 import { getValidationIssue } from "../../../../common/orpc/lib/get-validation-issue";
 import { isOrpcDefinedError } from "../../../../common/orpc/lib/is-orpc-defined-error";
 import { useHistory } from "../../../../isomorphic/generic/hooks/use-history";
@@ -33,7 +34,7 @@ export function EventWidget({ id }: EventWidgetInput) {
 
   const eventsGetQuery = useSuspenseQuery(
     orpcClientSideQueryClient.core.events.get.queryOptions({
-      input: { id: id },
+      input: { id: id, include: { show: true } },
     }),
   );
 
@@ -42,13 +43,9 @@ export function EventWidget({ id }: EventWidgetInput) {
       meta: {
         awaits: [
           orpcClientSideQueryClient.core.events.list.key(),
-          orpcClientSideQueryClient.core.events.get.key({
-            input: { id: id },
-          }),
+          orpcClientSideQueryClient.core.events.get.key(),
           orpcClientSideQueryClient.core.instances.list.key(),
-          orpcClientSideQueryClient.core.instances.get.key({
-            input: { eventId: id },
-          }),
+          orpcClientSideQueryClient.core.instances.get.key(),
         ],
       },
     }),
@@ -65,6 +62,8 @@ export function EventWidget({ id }: EventWidgetInput) {
     }),
   );
 
+  const event = eventsGetQuery.data;
+
   const handleSave = useCallback(
     async ({ values }: EditEventFormSubmitInput) => {
       if (saving || deleting) return;
@@ -72,7 +71,7 @@ export function EventWidget({ id }: EventWidgetInput) {
       setSaving(true);
 
       try {
-        const event = await eventsUpdateMutation.mutateAsync({
+        const updatedEvent = await eventsUpdateMutation.mutateAsync({
           data: {
             duration: dayjs
               .duration(
@@ -81,6 +80,8 @@ export function EventWidget({ id }: EventWidgetInput) {
                   .diff(dayjs.tz(values.start, values.timezone)),
               )
               .toISOString(),
+            exclude: values.exclude,
+            include: values.include,
             recurrence:
               values.recurrence.recurring === "yes"
                 ? {
@@ -104,44 +105,46 @@ export function EventWidget({ id }: EventWidgetInput) {
             timezone: values.timezone,
             type: values.type,
           },
-          id: eventsGetQuery.data.id,
+          id: event.id,
         });
 
         notifications.success({ message: msg({ message: "Event updated" }) });
 
-        if (history.entries.length > 1) router.back();
-        else router.push("/");
+        if (history.entries.length > 1) {
+          const target = history.entries[history.entries.length - 2]!;
+          const { url } = createUrl({ path: target.path, query: target.query });
+          router.push(url);
+        } else {
+          router.push("/");
+        }
 
         return {
           values: {
             end: dayjs
-              .tz(event.start, event.timezone)
-              .add(dayjs.duration(event.duration))
+              .tz(updatedEvent.start, updatedEvent.timezone)
+              .add(dayjs.duration(updatedEvent.duration))
               .format("YYYY-MM-DDTHH:mm:ss"),
+            exclude: updatedEvent.exclude,
+            include: updatedEvent.include,
             recurrence:
-              event.recurrence &&
-              (event.recurrence.frequency == "daily" ||
-                event.recurrence.frequency == "weekly" ||
-                event.recurrence.frequency == "monthly" ||
-                event.recurrence.frequency == "yearly")
+              updatedEvent.recurrence &&
+              (updatedEvent.recurrence.frequency == "daily" ||
+                updatedEvent.recurrence.frequency == "weekly" ||
+                updatedEvent.recurrence.frequency == "monthly" ||
+                updatedEvent.recurrence.frequency == "yearly")
                 ? {
-                    frequency: event.recurrence.frequency,
-                    interval: event.recurrence.interval ?? 1,
+                    frequency: updatedEvent.recurrence.frequency,
+                    interval: updatedEvent.recurrence.interval ?? 1,
                     recurring: "yes" as const,
                     termination:
-                      event.recurrence.termination?.type === "count"
+                      updatedEvent.recurrence.termination?.type === "count"
                         ? {
                             ends: "after" as const,
-                            times: event.recurrence.termination.count,
+                            times: updatedEvent.recurrence.termination.count,
                           }
-                        : event.recurrence.termination?.type === "until"
+                        : updatedEvent.recurrence.termination?.type === "until"
                           ? {
-                              date: dayjs
-                                .tz(
-                                  event.recurrence.termination.until,
-                                  event.timezone,
-                                )
-                                .format("YYYY-MM-DDTHH:mm:ss"),
+                              date: updatedEvent.recurrence.termination.until,
                               ends: "on" as const,
                             }
                           : {
@@ -149,12 +152,9 @@ export function EventWidget({ id }: EventWidgetInput) {
                             },
                   }
                 : { recurring: "no" as const },
-            show: event.showId,
-            start: dayjs
-              .tz(event.start, event.timezone)
-              .format("YYYY-MM-DDTHH:mm:ss"),
-            timezone: event.timezone,
-            type: event.type,
+            start: updatedEvent.start,
+            timezone: updatedEvent.timezone,
+            type: updatedEvent.type,
           },
         };
       } catch (error) {
@@ -164,6 +164,24 @@ export function EventWidget({ id }: EventWidgetInput) {
 
             return {
               errors: {
+                ...Object.fromEntries(
+                  (values.exclude ?? []).map((_, index) => [
+                    `exclude.${index}.start`,
+                    getValidationIssue({
+                      error: error,
+                      path: `data.exclude.${index}.start`,
+                    }).message,
+                  ]),
+                ),
+                ...Object.fromEntries(
+                  (values.include ?? []).map((_, index) => [
+                    `include.${index}.start`,
+                    getValidationIssue({
+                      error: error,
+                      path: `data.include.${index}.start`,
+                    }).message,
+                  ]),
+                ),
                 "recurrence.frequency": getValidationIssue({
                   error: error,
                   path: "data.recurrence.frequency",
@@ -216,6 +234,7 @@ export function EventWidget({ id }: EventWidgetInput) {
     },
     [
       deleting,
+      event,
       eventsUpdateMutation.mutateAsync,
       history.entries.length,
       notifications.error,
@@ -235,15 +254,20 @@ export function EventWidget({ id }: EventWidgetInput) {
     setDeleting(true);
 
     try {
-      await eventsDeleteMutation.mutateAsync({ id: eventsGetQuery.data.id });
+      await eventsDeleteMutation.mutateAsync({ id: event.id });
     } catch (error) {
       if (isOrpcDefinedError(error) && error.code === "NOT_FOUND") {
         notifications.warning({
           message: msg({ message: "Event already deleted" }),
         });
 
-        if (history.entries.length > 1) router.back();
-        else router.push("/");
+        if (history.entries.length > 1) {
+          const target = history.entries[history.entries.length - 2]!;
+          const { url } = createUrl({ path: target.path, query: target.query });
+          router.push(url);
+        } else {
+          router.push("/");
+        }
 
         return;
       }
@@ -259,12 +283,17 @@ export function EventWidget({ id }: EventWidgetInput) {
 
     notifications.success({ message: msg({ message: "Event deleted" }) });
 
-    if (history.entries.length > 1) router.back();
-    else router.push("/");
+    if (history.entries.length > 1) {
+      const target = history.entries[history.entries.length - 2]!;
+      const { url } = createUrl({ path: target.path, query: target.query });
+      router.push(url);
+    } else {
+      router.push("/");
+    }
   }, [
     deleting,
+    event,
     eventsDeleteMutation.mutateAsync,
-    eventsGetQuery.data.id,
     history.entries.length,
     notifications.success,
     notifications.warning,
@@ -275,33 +304,30 @@ export function EventWidget({ id }: EventWidgetInput) {
   const initialValues = useDeepCompareMemo(
     () => ({
       end: dayjs
-        .tz(eventsGetQuery.data.start, eventsGetQuery.data.timezone)
-        .add(dayjs.duration(eventsGetQuery.data.duration))
+        .tz(event.start, event.timezone)
+        .add(dayjs.duration(event.duration))
         .format("YYYY-MM-DDTHH:mm:ss"),
+      exclude: event.exclude,
+      include: event.include,
       recurrence:
-        eventsGetQuery.data.recurrence &&
-        (eventsGetQuery.data.recurrence.frequency == "daily" ||
-          eventsGetQuery.data.recurrence.frequency == "weekly" ||
-          eventsGetQuery.data.recurrence.frequency == "monthly" ||
-          eventsGetQuery.data.recurrence.frequency == "yearly")
+        event.recurrence &&
+        (event.recurrence.frequency == "daily" ||
+          event.recurrence.frequency == "weekly" ||
+          event.recurrence.frequency == "monthly" ||
+          event.recurrence.frequency == "yearly")
           ? {
-              frequency: eventsGetQuery.data.recurrence.frequency,
-              interval: eventsGetQuery.data.recurrence.interval ?? 1,
+              frequency: event.recurrence.frequency,
+              interval: event.recurrence.interval ?? 1,
               recurring: "yes" as const,
               termination:
-                eventsGetQuery.data.recurrence.termination?.type === "count"
+                event.recurrence.termination?.type === "count"
                   ? {
                       ends: "after" as const,
-                      times: eventsGetQuery.data.recurrence.termination.count,
+                      times: event.recurrence.termination.count,
                     }
-                  : eventsGetQuery.data.recurrence.termination?.type === "until"
+                  : event.recurrence.termination?.type === "until"
                     ? {
-                        date: dayjs
-                          .tz(
-                            eventsGetQuery.data.recurrence.termination.until,
-                            eventsGetQuery.data.timezone,
-                          )
-                          .format("YYYY-MM-DDTHH:mm:ss"),
+                        date: event.recurrence.termination.until,
                         ends: "on" as const,
                       }
                     : {
@@ -309,20 +335,18 @@ export function EventWidget({ id }: EventWidgetInput) {
                       },
             }
           : { recurring: "no" as const },
-      show: eventsGetQuery.data.showId,
-      start: dayjs
-        .tz(eventsGetQuery.data.start, eventsGetQuery.data.timezone)
-        .format("YYYY-MM-DDTHH:mm:ss"),
-      timezone: eventsGetQuery.data.timezone,
-      type: eventsGetQuery.data.type,
+      start: event.start,
+      timezone: event.timezone,
+      type: event.type,
     }),
-    [eventsGetQuery.data],
+    [event],
   );
 
   return (
     <Stack h="100%" w="100%">
       <EditEventForm
         disabled={deleting}
+        event={event}
         initialValues={initialValues}
         onError={handleError}
         onSubmit={handleSave}

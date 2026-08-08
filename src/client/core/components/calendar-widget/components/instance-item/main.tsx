@@ -16,14 +16,23 @@ export function InstanceItem({ instance, ...input }: InstanceItemInput) {
     <UnstyledButton
       component={Link}
       display="contents"
-      href={`/events/${instance.event.id}`}
+      href={
+        !instance.event.recurrence
+          ? `/events/${instance.event.id}`
+          : `/instances/${instance.event.id}/${encodeURIComponent(instance.start)}`
+      }
     >
       <CalendarItem
         color={constants.colors[instance.event.type]}
         end={dayjs
           .tz(instance.start, instance.event.timezone)
-          .add(dayjs.duration(instance.duration))}
-        start={dayjs.tz(instance.start, instance.event.timezone)}
+          .add(dayjs.duration(instance.duration))
+          .locale(localization.locale)
+          .local()}
+        start={dayjs
+          .tz(instance.start, instance.event.timezone)
+          .locale(localization.locale)
+          .local()}
         {...input}
       >
         <Text fw="bold" size="xs" ta="center" truncate="end" w="100%">

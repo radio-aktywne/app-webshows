@@ -1,46 +1,55 @@
 import { msg, plural } from "@lingui/core/macro";
 import {
+  ActionIcon,
   Button,
   Group,
   InputWrapper,
   NumberInput,
   Select,
   SimpleGrid,
+  Stack,
   Text,
 } from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { randomId } from "@mantine/hooks";
 import { isString } from "es-toolkit/predicate";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { MdAdd, MdClose } from "react-icons/md";
 
 import type { EditEventFormInput } from "./types";
 
 import { useForm } from "../../../../../../isomorphic/core/hooks/use-form";
 import { useLocalization } from "../../../../../../isomorphic/localization/hooks/use-localization";
-import { orpcClientSideQueryClient } from "../../../../../orpc/vars/clients";
 import { Schemas } from "./schemas";
 
 export function EditEventForm({
   disabled,
+  event,
   initialValues,
   onError,
   onSubmit,
 }: EditEventFormInput) {
   const [values, setValues] = useState(initialValues);
+  const [includeKeys, setIncludeKeys] = useState(
+    initialValues.include?.map(() => randomId()) ?? [],
+  );
+
+  const timezones = useMemo(() => Intl.supportedValuesOf("timeZone"), []);
 
   const { localization } = useLocalization();
-
-  const showsListQuery = useSuspenseQuery(
-    orpcClientSideQueryClient.core.shows.list.queryOptions({
-      input: { limit: null },
-    }),
-  );
 
   const { form, handleFormSubmit, submitting } = useForm({
     initialValues: initialValues,
     inputSchema: Schemas.Input,
     onError: onError,
-    onSubmit: onSubmit,
+    onSubmit: async (currentValues) => {
+      const result = await onSubmit?.(currentValues);
+
+      if (result?.values?.include)
+        setIncludeKeys(result.values.include.map(() => randomId()));
+
+      return result;
+    },
     onValuesChange: ({ current }) => setValues(current),
     outputSchema: Schemas.Output,
   });
@@ -72,22 +81,24 @@ export function EditEventForm({
         {...form.getInputProps("type")}
       />
       <Select
-        data={showsListQuery.data.shows.map((show) => ({
-          label: show.title,
-          value: show.id,
-        }))}
+        data={
+          event.show
+            ? [
+                {
+                  label: event.show.title,
+                  value: event.show.id,
+                },
+              ]
+            : []
+        }
         disabled={true}
-        errorProps={{
-          title: [form.getInputProps("show").error].find(isString),
-        }}
-        key={form.key("show")}
         label={localization.localize(msg({ message: "Show" }))}
         placeholder={localization.localize(msg({ message: "Select show" }))}
         required={false}
-        {...form.getInputProps("show")}
+        value={event.show ? event.show.id : undefined}
       />
       <Select
-        data={Intl.supportedValuesOf("timeZone").map((timezone) => ({
+        data={timezones.map((timezone) => ({
           label: timezone,
           value: timezone,
         }))}
@@ -367,6 +378,121 @@ export function EditEventForm({
             </Group>
           </InputWrapper>
         </>
+      )}
+      <InputWrapper
+        label={localization.localize(msg({ message: "Additional instances" }))}
+        required={false}
+      >
+        <Stack>
+          {values.include?.map((_, index) => (
+            <Group align="start" gap="xs" key={includeKeys[index]}>
+              <DateTimePicker
+                dropdownType="modal"
+                errorProps={{
+                  title: [
+                    form.getInputProps(`include.${index}.start`).error,
+                  ].find(isString),
+                }}
+                key={form.key(`include.${index}.start`)}
+                placeholder={localization.localize(
+                  msg({ message: "Select start date and time" }),
+                )}
+                required={true}
+                style={{ flexGrow: 1 }}
+                valueFormat="LLL"
+                {...form.getInputProps(`include.${index}.start`)}
+              />
+              <ActionIcon
+                color="dark.1"
+                onClick={() => {
+                  const before = form.getValues();
+
+                  if (before.include && before.include.length > index)
+                    form.removeListItem("include", index);
+
+                  const after = form.getValues();
+
+                  if (after.include?.length === 0)
+                    form.setFieldValue("include", null);
+
+                  setIncludeKeys((prev) => prev.filter((_, i) => i !== index));
+                }}
+                size="input-sm"
+                title={localization.localize(msg({ message: "Remove" }))}
+                variant="subtle"
+              >
+                <MdClose size="1.25em" />
+              </ActionIcon>
+            </Group>
+          ))}
+          <Button
+            disabled={submitting}
+            leftSection={<MdAdd size="1.25em" />}
+            onClick={() => {
+              const values = form.getValues();
+              const item = { start: null };
+              const id = randomId();
+
+              if (values.include) form.insertListItem("include", item);
+              else form.setFieldValue("include", [item]);
+
+              setIncludeKeys((prev) => [...prev, id]);
+            }}
+            style={{ flexShrink: 0 }}
+            variant="default"
+          >
+            {localization.localize(msg({ message: "Add instance" }))}
+          </Button>
+        </Stack>
+      </InputWrapper>
+      {values.exclude && values.exclude.length > 0 && (
+        <InputWrapper
+          label={localization.localize(msg({ message: "Excluded instances" }))}
+          required={false}
+        >
+          <Stack>
+            {values.exclude.map((item, index) => (
+              <Group align="start" gap="xs" key={index}>
+                <DateTimePicker
+                  disabled={true}
+                  dropdownType="modal"
+                  errorProps={{
+                    title: [
+                      form.getInputProps(`exclude.${index}.start`).error,
+                    ].find(isString),
+                  }}
+                  key={form.key(`exclude.${index}.start`)}
+                  placeholder={localization.localize(
+                    msg({ message: "Select start date and time" }),
+                  )}
+                  required={true}
+                  style={{ flexGrow: 1 }}
+                  valueFormat="LLL"
+                  {...form.getInputProps(`exclude.${index}.start`)}
+                />
+                <ActionIcon
+                  color="dark.1"
+                  onClick={() => {
+                    const before = form.getValues();
+
+                    if (before.exclude && before.exclude.length > index)
+                      form.removeListItem("exclude", index);
+
+                    const after = form.getValues();
+
+                    if (after.exclude?.length === 0)
+                      form.setFieldValue("exclude", null);
+                  }}
+                  size="input-sm"
+                  title={localization.localize(msg({ message: "Remove" }))}
+                  variant="subtle"
+                >
+                  <MdClose size="1.25em" />
+                </ActionIcon>
+              </Group>
+            ))}
+          </Stack>
+        </InputWrapper>
       )}
       <Button
         disabled={disabled}

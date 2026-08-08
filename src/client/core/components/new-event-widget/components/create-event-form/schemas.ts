@@ -10,6 +10,20 @@ export const Schemas = {
         encode: (value) => value?.replace("T", " ") ?? null,
       },
     ),
+    include: z
+      .array(
+        z.object({
+          start: z.codec(
+            z.string().nullable(),
+            z.iso.datetime({ local: true }).optional(),
+            {
+              decode: (value) => value?.replace(" ", "T") ?? undefined,
+              encode: (value) => value?.replace("T", " ") ?? null,
+            },
+          ),
+        }),
+      )
+      .nullish(),
     recurrence: z.discriminatedUnion("recurring", [
       z.object({
         recurring: z.literal("no"),
@@ -64,6 +78,22 @@ export const Schemas = {
           .transform((value) => value.replace(" ", "T"))
           .pipe(z.iso.datetime({ local: true })),
       ),
+    include: z
+      .array(
+        z.object({
+          start: z
+            .string()
+            .nullable()
+            .pipe(
+              z
+                .string()
+                .transform((value) => value.replace(" ", "T"))
+                .pipe(z.iso.datetime({ local: true })),
+            ),
+        }),
+      )
+      .nullish()
+      .transform((value) => value ?? null),
     recurrence: z.discriminatedUnion("recurring", [
       z.object({
         recurring: z.literal("no"),

@@ -2008,9 +2008,29 @@ components:
       title: Event
       description: Event data.
     GetResponseInstance:
-      anyOf:
-        - $ref: "#/components/schemas/Instance"
-        - type: "null"
+      properties:
+        start:
+          $ref: "#/components/schemas/instances_models_NaiveDatetime"
+        duration:
+          $ref: "#/components/schemas/instances_models_Timedelta"
+        eventId:
+          type: string
+          format: uuid
+          title: Eventid
+          description: Identifier of the event the instance belongs to.
+        event:
+          anyOf:
+            - $ref: "#/components/schemas/instances_models_Event"
+            - type: "null"
+          description: Event the instance belongs to.
+      type: object
+      required:
+        - start
+        - duration
+        - eventId
+        - event
+      title: Instance
+      description: Instance data.
     GetResponseShow:
       properties:
         id:
