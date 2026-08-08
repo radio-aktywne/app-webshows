@@ -1,5 +1,4 @@
 import { msg } from "@lingui/core/macro";
-import { forbidden, notFound } from "next/navigation";
 import { connection } from "next/server";
 
 import type {
@@ -9,37 +8,17 @@ import type {
 } from "../../../../../../../types";
 import type { Keys } from "./types";
 
-import { isOrpcDefinedError } from "../../../../../../../../common/orpc/lib/is-orpc-defined-error";
 import { Metadata } from "../../../../../../../../isomorphic/metadata/components/metadata";
 import { Authenticated } from "../../../../../../../../server/access/components/authenticated";
 import { createMetadata } from "../../../../../../../../server/metadata/lib/create-metadata";
-import { orpcServerSideQueryClient } from "../../../../../../../../server/orpc/vars/clients";
-import { getQueryClient } from "../../../../../../../../server/query/lib/get-query-client";
 import { ModalsEventsIdPageView } from "./page.view";
 import { Schemas } from "./schemas";
 
-async function getTitle({
-  pathParameters,
-}: PageMetadataUtilityInput<typeof Schemas.Path, typeof Schemas.Query>) {
-  const { queryClient } = getQueryClient();
-
-  const event = await (async () => {
-    try {
-      return await queryClient.fetchQuery(
-        orpcServerSideQueryClient.core.events.get.queryOptions({
-          input: { id: pathParameters.id },
-        }),
-      );
-    } catch (error) {
-      if (isOrpcDefinedError(error) && error.code === "FORBIDDEN") forbidden();
-      if (isOrpcDefinedError(error) && error.code === "NOT_FOUND") notFound();
-      throw error;
-    }
-  })();
-
-  const eventId = event.id;
-
-  return msg({ message: `Event ${eventId} • tulip` });
+async function getTitle({}: PageMetadataUtilityInput<
+  typeof Schemas.Path,
+  typeof Schemas.Query
+>) {
+  return msg({ message: "Edit event • tulip" });
 }
 
 export async function generateMetadata({

@@ -1,12 +1,17 @@
+import { msg } from "@lingui/core/macro";
 import { ActionIcon, Group, Text, UnstyledButton } from "@mantine/core";
 import Link from "next/link";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 
 import type { ControlsInput } from "./types";
 
+import { useLocalization } from "../../../../../../isomorphic/localization/hooks/use-localization";
+
 export function Controls({ date }: ControlsInput) {
   const start = date.local().startOf("week");
   const end = date.local().endOf("week");
+
+  const { localization } = useLocalization();
 
   return (
     <Group justify="space-between" w="100%">
@@ -19,6 +24,7 @@ export function Controls({ date }: ControlsInput) {
             date: date.subtract(1, "week").format("YYYY-MM-DD"),
           },
         }}
+        title={localization.localize(msg({ message: "Previous week" }))}
       >
         <MdKeyboardArrowLeft size="2em" />
       </ActionIcon>
@@ -36,6 +42,7 @@ export function Controls({ date }: ControlsInput) {
             date: date.add(1, "week").format("YYYY-MM-DD"),
           },
         }}
+        title={localization.localize(msg({ message: "Next week" }))}
       >
         <MdKeyboardArrowRight size="2em" />
       </ActionIcon>

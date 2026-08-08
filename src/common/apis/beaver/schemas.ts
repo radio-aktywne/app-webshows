@@ -2157,7 +2157,23 @@ export const GetResponseShowSchema = z
     description: "Show data.",
   });
 
-export const GetResponseInstanceSchema = InstanceSchema.nullable();
+/**
+ * Instance
+ *
+ * Instance data.
+ */
+export const GetResponseInstanceSchema = z
+  .object({
+    start: InstancesModelsNaiveDatetimeSchema,
+    duration: InstancesModelsTimedeltaSchema,
+    eventId: z.uuid().register(z.globalRegistry, {
+      description: "Identifier of the event the instance belongs to.",
+    }),
+    event: InstancesModelsEventSchema.nullable(),
+  })
+  .register(z.globalRegistry, {
+    description: "Instance data.",
+  });
 
 /**
  * Instance

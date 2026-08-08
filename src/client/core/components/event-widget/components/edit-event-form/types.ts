@@ -1,6 +1,7 @@
 import type { HasRequiredKeys } from "type-fest";
 import type * as z from "zod";
 
+import type { EventsModelsEvent } from "../../../../../../common/apis/beaver/types";
 import type {
   UseFormErrorInput,
   UseFormErrors,
@@ -23,6 +24,8 @@ export type EditEventFormInitialValues = UseFormInitialValues<
 >;
 
 export type EditEventFormDisabled = boolean;
+
+export type EditEventFormEvent = EventsModelsEvent;
 
 export type EditEventFormErrorInput = UseFormErrorInput<
   z.output<EditEventFormInputSchema>
@@ -65,6 +68,7 @@ export type EditEventFormInput = (HasRequiredKeys<
   ? { initialValues: EditEventFormInitialValues }
   : { initialValues?: EditEventFormInitialValues }) & {
   disabled?: EditEventFormDisabled;
+  event: EditEventFormEvent;
   onError?: EditEventFormOnError;
   onSubmit: EditEventFormOnSubmit;
 };

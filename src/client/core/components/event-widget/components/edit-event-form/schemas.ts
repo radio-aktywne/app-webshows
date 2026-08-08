@@ -6,6 +6,34 @@ export const Schemas = {
       decode: (value) => value.replace(" ", "T"),
       encode: (value) => value.replace("T", " "),
     }),
+    exclude: z
+      .array(
+        z.object({
+          start: z.codec(
+            z.string().nullable(),
+            z.iso.datetime({ local: true }).optional(),
+            {
+              decode: (value) => value?.replace(" ", "T") ?? undefined,
+              encode: (value) => value?.replace("T", " ") ?? null,
+            },
+          ),
+        }),
+      )
+      .nullish(),
+    include: z
+      .array(
+        z.object({
+          start: z.codec(
+            z.string().nullable(),
+            z.iso.datetime({ local: true }).optional(),
+            {
+              decode: (value) => value?.replace(" ", "T") ?? undefined,
+              encode: (value) => value?.replace("T", " ") ?? null,
+            },
+          ),
+        }),
+      )
+      .nullish(),
     recurrence: z.discriminatedUnion("recurring", [
       z.object({
         recurring: z.literal("no"),
@@ -38,7 +66,6 @@ export const Schemas = {
         ]),
       }),
     ]),
-    show: z.string().nullable().pipe(z.uuidv4().nullable()),
     start: z.codec(z.string(), z.iso.datetime({ local: true }), {
       decode: (value) => value.replace(" ", "T"),
       encode: (value) => value.replace("T", " "),
@@ -53,6 +80,38 @@ export const Schemas = {
         .transform((value) => value.replace(" ", "T"))
         .pipe(z.iso.datetime({ local: true })),
     ),
+    exclude: z
+      .array(
+        z.object({
+          start: z
+            .string()
+            .nullable()
+            .pipe(
+              z
+                .string()
+                .transform((value) => value.replace(" ", "T"))
+                .pipe(z.iso.datetime({ local: true })),
+            ),
+        }),
+      )
+      .nullish()
+      .transform((value) => value ?? null),
+    include: z
+      .array(
+        z.object({
+          start: z
+            .string()
+            .nullable()
+            .pipe(
+              z
+                .string()
+                .transform((value) => value.replace(" ", "T"))
+                .pipe(z.iso.datetime({ local: true })),
+            ),
+        }),
+      )
+      .nullish()
+      .transform((value) => value ?? null),
     recurrence: z.discriminatedUnion("recurring", [
       z.object({
         recurring: z.literal("no"),
@@ -86,7 +145,6 @@ export const Schemas = {
         ]),
       }),
     ]),
-    show: z.string().nullable().pipe(z.uuidv4().nullable()),
     start: z.string().pipe(
       z
         .string()

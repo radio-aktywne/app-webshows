@@ -10,6 +10,7 @@ import { LoadingWidget } from "../../../../../../../../common/core/components/ge
 import { isOrpcDefinedError } from "../../../../../../../../common/orpc/lib/is-orpc-defined-error";
 import { Hydrated } from "../../../../../../../../isomorphic/generic/components/hydrated";
 import { RouteModal } from "../../../../../../../../isomorphic/generic/components/route-modal";
+import { Localized } from "../../../../../../../../isomorphic/localization/components/localized";
 import { orpcServerSideQueryClient } from "../../../../../../../../server/orpc/vars/clients";
 import { getQueryClient } from "../../../../../../../../server/query/lib/get-query-client";
 
@@ -24,6 +25,7 @@ export async function ModalsEventsIdPageView({
         orpcServerSideQueryClient.core.events.get.queryOptions({
           input: {
             id: pathParameters.id,
+            include: { show: true },
           },
         }),
       );
@@ -33,14 +35,11 @@ export async function ModalsEventsIdPageView({
     }
   })();
 
-  void queryClient.prefetchQuery(
-    orpcServerSideQueryClient.core.shows.list.queryOptions({
-      input: { limit: null },
-    }),
-  );
-
   return (
-    <RouteModal fallback="/" title={msg({ message: "Edit event" })}>
+    <RouteModal
+      fallback="/"
+      title={<Localized message={msg({ message: "Edit event" })} />}
+    >
       <HydrationBoundary state={dehydrate(queryClient)}>
         <Hydrated fallback={<LoadingWidget />}>
           <EventWidget id={pathParameters.id} />

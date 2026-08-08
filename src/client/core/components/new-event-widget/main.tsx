@@ -9,6 +9,7 @@ import { useCallback, useMemo, useState } from "react";
 import type { NewEventWidgetInput } from "./types";
 
 import { dayjs } from "../../../../common/dates/vars/dayjs";
+import { createUrl } from "../../../../common/generic/lib/create-url";
 import { getValidationIssue } from "../../../../common/orpc/lib/get-validation-issue";
 import { isOrpcDefinedError } from "../../../../common/orpc/lib/is-orpc-defined-error";
 import { useHistory } from "../../../../isomorphic/generic/hooks/use-history";
@@ -54,6 +55,7 @@ export function NewEventWidget({}: NewEventWidgetInput) {
                   .diff(dayjs.tz(values.start, values.timezone)),
               )
               .toISOString(),
+            include: values.include,
             recurrence:
               values.recurrence.recurring === "yes"
                 ? {
@@ -84,8 +86,13 @@ export function NewEventWidget({}: NewEventWidgetInput) {
           message: msg({ message: "Event created" }),
         });
 
-        if (history.entries.length > 1) router.back();
-        else router.push("/");
+        if (history.entries.length > 1) {
+          const target = history.entries[history.entries.length - 2]!;
+          const { url } = createUrl({ path: target.path, query: target.query });
+          router.push(url);
+        } else {
+          router.push("/");
+        }
 
         return {
           values: {
@@ -93,6 +100,7 @@ export function NewEventWidget({}: NewEventWidgetInput) {
               .tz(event.start, event.timezone)
               .add(dayjs.duration(event.duration))
               .format("YYYY-MM-DDTHH:mm:ss"),
+            include: event.include,
             recurrence:
               event.recurrence &&
               (event.recurrence.frequency == "daily" ||
@@ -111,12 +119,7 @@ export function NewEventWidget({}: NewEventWidgetInput) {
                           }
                         : event.recurrence.termination?.type === "until"
                           ? {
-                              date: dayjs
-                                .tz(
-                                  event.recurrence.termination.until,
-                                  event.timezone,
-                                )
-                                .format("YYYY-MM-DDTHH:mm:ss"),
+                              date: event.recurrence.termination.until,
                               ends: "on" as const,
                             }
                           : {
@@ -125,9 +128,7 @@ export function NewEventWidget({}: NewEventWidgetInput) {
                   }
                 : { recurring: "no" as const },
             show: event.showId,
-            start: dayjs
-              .tz(event.start, event.timezone)
-              .format("YYYY-MM-DDTHH:mm:ss"),
+            start: event.start,
             timezone: event.timezone,
             type: event.type,
           },
@@ -139,6 +140,15 @@ export function NewEventWidget({}: NewEventWidgetInput) {
 
             return {
               errors: {
+                ...Object.fromEntries(
+                  (values.include ?? []).map((_, index) => [
+                    `include.${index}.start`,
+                    getValidationIssue({
+                      error: error,
+                      path: `data.include.${index}.start`,
+                    }).message,
+                  ]),
+                ),
                 "recurrence.frequency": getValidationIssue({
                   error: error,
                   path: "data.recurrence.frequency",

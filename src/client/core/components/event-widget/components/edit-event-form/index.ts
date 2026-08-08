@@ -3,6 +3,7 @@ export type {
   EditEventFormDisabled,
   EditEventFormErrorInput,
   EditEventFormErrors,
+  EditEventFormEvent,
   EditEventFormInitialValues,
   EditEventFormInput,
   EditEventFormInputSchema,
